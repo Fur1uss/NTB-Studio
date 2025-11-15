@@ -1,4 +1,290 @@
-.nosotros-section{
+/* --- Contenedor Principal --- */
+.nosotros-section {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
+  overflow: visible; /* Permitir que nombres y difuminado sean visibles */
+  
+  /* Estructura Flex: Centra el wrapper verticalmente */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 5vw; /* Padding vertical y horizontal */
+  box-sizing: border-box;
+}
+
+.nosotros-titulos {
+  width: 100%;
+  max-width: 1200px;
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+.nosotros-titulos h3 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+}
+
+.nosotros-titulos h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+/* --- Wrapper de Miembros (Escritorio) --- */
+.nosotros-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 60vh; /* Altura fija para el contenedor de barras */
+  gap: 2vw;
+  padding-top: 60px; /* Espacio para los nombres arriba */
+  padding-bottom: 40px; /* Espacio para el difuminado inferior */
+  
+  /* REQUISITOS DE ESTILO: */
+  justify-content: center; /* Centradas */
+  align-items: flex-end;   /* Pegadas al borde inferior */
+  position: relative;
+  overflow: visible; /* Permitir que nombres y difuminado sean visibles */
+}
+
+/* --- Barra de Miembro (Escritorio) --- */
+.miembro-barra {
+  flex: 1;
+  max-width: 18%;
+  background-color: #ECECEC; /* Barra gris claro */
+  border-radius: 0 0 12px 12px;
+  cursor: pointer;
+  
+  /* Estado inicial para GSAP (en desktop) - será sobrescrito por GSAP */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  align-self: flex-end; /* Asegurar que crezca desde abajo */
+  /* No usar overflow: hidden para que el difuminado sea visible */
+  
+  /* Transición para hover (no afecta a GSAP) */
+  transition: box-shadow 0.3s ease;
+}
+
+/* Efecto difuminado en el borde inferior - como si saliera de la pantalla */
+.miembro-barra::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px; /* Altura del área difuminada */
+  background: linear-gradient(to bottom, 
+    rgba(236, 236, 236, 1) 0%,
+    rgba(236, 236, 236, 0.6) 30%,
+    rgba(236, 236, 236, 0.2) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  filter: blur(15px);
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 0 0 12px 12px;
+  transform: translateY(50%); /* Extender hacia abajo */
+}
+
+.miembro-barra:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.miembro-barra:hover .miembro-nombre {
+  transform: translateX(-50%) translateY(-5px);
+  color: #000;
+}
+
+/* Alturas variables (como en el mockup) */
+.miembro-barra:nth-child(1) { height: 60%; }
+
+.miembro-barra:nth-child(2) { height: 75%; }
+
+.miembro-barra:nth-child(3) { height: 90%; }
+
+.miembro-barra:nth-child(4) { height: 70%; }
+
+.miembro-barra:nth-child(5) { height: 65%; }
+
+.miembro-nombre {
+  text-align: center;
+  padding: 12px 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none; /* No interferir con clicks */
+}
+
+.miembro-foto-flipbook {
+  width: 100%;
+  height: 85%;
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  border-radius: 0 0 12px 12px;
+  position: relative;
+  z-index: 0;
+}
+
+/* --- Responsive (Tablet) --- */
+@media (min-width: 481px) and (max-width: 768px) {
+  .nosotros-section {
+    min-height: auto;
+    padding: 60px 4vw;
+    overflow: visible;
+  }
+
+  .nosotros-titulos h2 {
+    font-size: 2.2rem;
+  }
+  
+  .nosotros-wrapper {
+    flex-direction: row; /* Mantener estructura horizontal */
+    justify-content: center;
+    align-items: flex-end;
+    height: 40vh; /* Más pequeño que desktop */
+    gap: 1.5vw;
     width: 100%;
-    height: 100vh;
+    padding-top: 50px;
+    padding-bottom: 30px;
+    overflow: visible;
+  }
+
+  .miembro-barra {
+    flex: 1;
+    max-width: 18%; /* Mantener proporciones */
+    /* Las alturas se mantienen con porcentajes (60%, 75%, etc.) */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .miembro-nombre {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 10px;
+    font-size: 0.95rem;
+  }
+
+  .miembro-foto-flipbook {
+    height: 85%;
+  }
+
+  /* Difuminado también en tablet */
+  .miembro-barra::after {
+    height: 40px;
+    filter: blur(10px);
+  }
+}
+
+/* --- Responsive (Móvil) --- */
+@media (max-width: 480px) {
+  .nosotros-section {
+    min-height: auto;
+    padding: 50px 4vw;
+    overflow: visible;
+  }
+
+  .nosotros-titulos h2 {
+    font-size: 1.8rem;
+  }
+  
+  .nosotros-wrapper {
+    flex-direction: row; /* Mantener estructura horizontal */
+    justify-content: center;
+    align-items: flex-end;
+    height: 35vh; /* Más pequeño que tablet */
+    gap: 2vw;
+    width: 100%;
+    padding-top: 45px;
+    padding-bottom: 25px;
+    overflow: visible;
+  }
+
+  .miembro-barra {
+    flex: 1;
+    max-width: 18%; /* Mantener proporciones */
+    /* Las alturas se mantienen con porcentajes (60%, 75%, etc.) */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .miembro-nombre {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+
+  .miembro-foto-flipbook {
+    height: 85%;
+  }
+
+  /* Difuminado también en móvil */
+  .miembro-barra::after {
+    height: 35px;
+    filter: blur(8px);
+  }
+}
+
+/* --- Estilos del Modal (Universal) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-boton-cerrar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #999;
+  cursor: pointer;
+}
+
+.modal-imagen {
+  width: 100%;
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.modal-contenido h2 {
+  margin-top: 0;
 }

@@ -1,0 +1,51 @@
+.NTBsticker-section-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100vh;
+    background-color: #000000;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Orbe verde difuminado que palpite */
+.orbe-verde {
+    position: absolute;
+    bottom: -750px; /* La mitad del orbe (750px de 1500px) está fuera, solo la mitad superior visible */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1500px;
+    height: 1500px;
+    background: radial-gradient(
+        circle,
+        rgba(32, 227, 55, 0.6) 0%,
+        rgba(32, 227, 55, 0.4) 30%,
+        rgba(32, 227, 55, 0.2) 60%,
+        rgba(32, 227, 55, 0) 100%
+    );
+    filter: blur(150px);
+    border-radius: 50%;
+    animation: palpitar 4s ease-in-out infinite;
+    z-index: 0;
+}
+
+/* Animación de pulso lento */
+@keyframes palpitar {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateX(-50%) translateY(-20px) scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Asegurar que el contenido esté por encima del orbe */
+.NTBsticker-section-container h2,
+.NTBsticker-section-container p {
+    position: relative;
+    z-index: 1;
+}

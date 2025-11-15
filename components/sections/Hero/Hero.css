@@ -1,0 +1,113 @@
+header{
+    background-color: #20E337;
+    width: 100%;
+    height: 100vh;
+
+    margin: 0;
+    padding: 0;
+    position: relative; /* allow absolute overlay spanning full header */
+    display: grid;
+    grid-template-rows: 1fr 20vh; /* contenido + carrusel */
+}
+
+h1{
+    /* Responsive scaling: minimum 1.4rem on very small screens,
+       fluid growth, capped at 2.4rem on large displays */
+    font-size: clamp(1.4rem, 3.5vw + 0.5rem, 2.4rem);
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+}
+
+.header-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2; /* above lanyard overlay */
+    pointer-events: none; /* let empty areas pass through to canvas */
+    grid-row: 1; /* fila de contenido */
+}
+
+.header-interative-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 100%;
+
+    padding: 0 0 0 100px;
+    position: relative;
+    z-index: 2; /* above lanyard overlay */
+    pointer-events: auto; /* keep UI clickable */
+}
+
+.header-interative-container div{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+.header-interative-container div img{
+    width: 25vw;
+    min-width: 250px;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    object-fit: contain;
+}
+
+.header-lanyard-container{
+    grid-row: 1 / -1; /* fondo en ambas filas */
+    z-index: 1; /* behind interactive content */
+    height: 90%;
+}
+
+.header-text-carrousel{
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2; /* above lanyard overlay */
+    grid-row: 2; /* fila carrusel */
+
+}
+
+/* Responsive: ocultar lanyard en móviles y expandir el panel interactivo */
+@media (max-width: 768px) {
+    .header-lanyard-container {
+        display: none;
+    }
+    .header-interative-container {
+        width: 100% !important;
+        padding: 0 32px !important; /* override desktop left padding */
+    }
+    .header-container {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .header-container {
+        height: 100%;
+        flex-direction: column;
+        align-items: flex-start; /* allow content to align left with padding */
+    }
+    .header-interative-container {
+        padding: 24px 36px !important; /* override with balanced padding */
+        width: 100%;
+    }
+    h1 {
+        /* Slightly tighter on very small screens */
+        font-size: clamp(1.3rem, 6vw, 1.8rem);
+        line-height: 1.2;
+    }
+}

@@ -1,15 +1,13 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { K2D } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Fuente K2D auto-hospedada con next/font (sin FOUT)
+const k2d = K2D({
   subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Create Next App",
@@ -19,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={k2d.className} suppressHydrationWarning={true}>
         {children}
       </body>
     </html>

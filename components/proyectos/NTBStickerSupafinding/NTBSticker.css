@@ -2,22 +2,40 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     width: 100%;
     height: 100vh;
     background-color: #000000;
     position: relative;
     overflow: hidden;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+/* Overlay blanco que se desvanece para revelar el fondo negro */
+.discovery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 2;
+    pointer-events: none;
 }
 
 /* Orbe verde difuminado que palpite */
 .orbe-verde {
     position: absolute;
-    bottom: -750px; /* La mitad del orbe (750px de 1500px) está fuera, solo la mitad superior visible */
+    bottom: -1000px;
     left: 50%;
     transform: translateX(-50%);
     width: 1500px;
     height: 1500px;
+    margin: 0;
+    padding: 0;
     background: radial-gradient(
         circle,
         rgba(32, 227, 55, 0.6) 0%,
@@ -43,9 +61,23 @@
     }
 }
 
-/* Asegurar que el contenido esté por encima del orbe */
-.NTBsticker-section-container h2,
-.NTBsticker-section-container p {
+/* Contenedor del contenido */
+.NTBsticker-content {
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Asegurar que el contenido esté por encima del orbe */
+.NTBsticker-content h2,
+.NTBsticker-content p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%;
 }

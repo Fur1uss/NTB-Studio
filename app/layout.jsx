@@ -1,5 +1,6 @@
 import { K2D } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/components/ui/SmoothScroll/SmoothScroll";
 
 // Fuente K2D auto-hospedada con next/font (sin FOUT)
 const k2d = K2D({
@@ -18,7 +19,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={k2d.className} suppressHydrationWarning={true}>
-        {children}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

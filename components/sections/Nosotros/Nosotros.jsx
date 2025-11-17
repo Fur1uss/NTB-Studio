@@ -87,12 +87,14 @@ const Nosotros = () => {
             scrollTrigger: {
               trigger: sectionRef.current,
               pin: true,
+              pinSpacing: true,
+              anticipatePin: 1,
               scrub: 1,
               start: "top top",
               // SOLUCIÓN AL BUG: Cálculo de 'end' dinámico.
-              // Proporciona 600px de "espacio de scroll" por cada miembro.
+              // Proporciona 900px de "espacio de scroll" por cada miembro.
               // Esto asegura que el 'end' sea proporcional al contenido.
-              end: () => "+=" + (memberRefs.current.length * 600), 
+              end: () => "+=" + (memberRefs.current.length * 900), 
             }
           });
 

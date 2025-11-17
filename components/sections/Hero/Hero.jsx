@@ -1,4 +1,8 @@
-const { headers } = require("next/he\aders")
+"use client";
+
+import React, { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./Hero.css"
 
 //Componentes
@@ -7,7 +11,26 @@ import Button from "@/components/ui/button/Button"
 import InfiniteScrollPhrases from "@/components/textCarousel/TextCarousel"
 import BubbleMenu from "@/components/ui/bubbleNav/BubbleNav"
 
+// Registrar plugins
+gsap.registerPlugin(ScrollTrigger);
+
 const Hero = () => {
+    const headerRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            ScrollTrigger.create({
+                trigger: headerRef.current,
+                start: "top top",
+                end: "+=150vh",
+                pin: true,
+                pinSpacing: true,
+                anticipatePin: 1
+            });
+        }, headerRef);
+
+        return () => ctx.revert();
+    }, []);
     
     const items = [
   {
@@ -48,7 +71,7 @@ const Hero = () => {
 ];
 
     return (
-        <header>
+        <header ref={headerRef}>
             <BubbleMenu
                 items={items}
                 menuAriaLabel="Toggle navigation"

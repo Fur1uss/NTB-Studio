@@ -1,16 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useLayoutEffect, useRef } from "react";
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./Escogenos.css";
+
+// Registrar plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const Escogenos = () => {
     const [activeBadge, setActiveBadge] = useState(null);
+    const sectionRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            ScrollTrigger.create({
+                trigger: sectionRef.current,
+                start: "top top",
+                end: "+=150vh",
+                pin: true,
+                pinSpacing: true,
+                anticipatePin: 1
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
 
     const handleBadgeClick = (index) => {
         setActiveBadge(activeBadge === index ? null : index);
     };
     return (
-        <section className="escogenos-section">
+        <section ref={sectionRef} className="escogenos-section">
 
             <div className="escogenos-texts-container">
                 <h2>Somos el <b>puente</b> que conecta <br />nuevas tecnologías</h2>

@@ -4,6 +4,8 @@
   width: 100%;
   background-color: #ffffff;
   overflow: visible; /* Permitir que nombres y difuminado sean visibles */
+  position: relative;
+  z-index: 1;
   
   /* Estructura Flex: Centra el wrapper verticalmente */
   display: flex;

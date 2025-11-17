@@ -3,7 +3,15 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { League_Gothic } from 'next/font/google';
 import "./NTBSticker.css"
+
+// Importar fuente League Gothic desde Google Fonts
+const leagueGothic = League_Gothic({
+    subsets: ["latin"],
+    weight: ["400"],
+    display: "swap",
+});
 
 // Registrar plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -75,12 +83,18 @@ const NTBsticker = () => {
             <div ref={overlayRef} className="discovery-overlay"></div>
             <div ref={orbeRef} className="orbe-verde"></div>
             <div ref={contentRef} className="NTBsticker-content">
-                <h2 style={{color: 'white', fontSize: '3rem', marginBottom: '2rem'}}>
-                    NTB Sticker Supafinding
-                </h2>
-                <p style={{color: 'white', fontSize: '1.2rem', textAlign: 'center', maxWidth: '600px'}}>
-                    Esta es la sección NTBSticker. Proyecto de stickers digitales ganador del segundo lugar mundial.
-                </p>
+
+                <div className="NTBsticker-content-text">
+                    <div className="NTBsticker-content-text-project">
+                        <p className="proyecto-font">Proyecto</p>                    
+                        <h2 className={leagueGothic.className}><b>NTB</b> STICKER SUPAFINDING</h2>
+                        <p className="NTBsticker-content-text-project-description">Corem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+                    </div>
+                </div>
+
+                <div className="NTBsticker-content-image">
+
+                </div>
             </div>
         </section>
     )

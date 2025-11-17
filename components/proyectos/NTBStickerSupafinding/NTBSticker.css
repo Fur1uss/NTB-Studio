@@ -1,3 +1,6 @@
+/* Importar fuente Just Me Again Down Here desde CDN */
+@import url('https://fonts.googleapis.com/css2?family=Just+Me+Again+Down+Here&display=swap');
+
 .NTBsticker-section-container{
     display: flex;
     flex-direction: column;
@@ -66,18 +69,62 @@
     position: relative;
     z-index: 1;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.NTBsticker-content-text{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 70%;
+    height: 100%;
+    color: white;
+    padding: 50px;
+    padding-top: 300px;
+}	
+
+.NTBsticker-content-text-project{
+    gap: 0;
+    padding: 0;
+    margin: 0;
+}
+
+
+/* Aplicar fuente Just Me Again Down Here al texto "Proyecto" */
+.proyecto-font {
+    font-family: 'Just Me Again Down Here', cursive;
+    font-size: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.NTBsticker-content-text h2{
+    font-size: 6rem;
+    font-weight: 700;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+
+.NTBsticker-content-text-project-description{	
+    font-size: 1.5rem;
+    font-weight: 400;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.NTBsticker-content-image{
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 30%;
+    height: 100%;
 }
 
-/* Asegurar que el contenido esté por encima del orbe */
-.NTBsticker-content h2,
-.NTBsticker-content p {
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    width: 100%;
-}

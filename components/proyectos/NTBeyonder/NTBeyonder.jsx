@@ -53,6 +53,7 @@ const NTBeyonder = () => {
     const videoRef = useRef(null);
     const astronautRef = useRef(null);
     const nasaModelRef = useRef(null);
+    const nasaBadgeRef = useRef(null);
     const [stars, setStars] = useState([]);
 
     // Generar estrellas solo en el cliente para evitar problemas de hidratación
@@ -112,40 +113,13 @@ const NTBeyonder = () => {
                 });
             }
 
-            // Control de visibilidad del modelo 3D de NASA (sin animaciones)
-            ScrollTrigger.create({
-                trigger: sectionRef.current,
-                start: "top bottom",
-                end: "bottom top",
-                onEnter: () => {
-                    // Mostrar instantáneamente sin animación cuando la sección entra al viewport
-                    gsap.set(nasaModelRef.current, {
-                        opacity: 1,
-                        scale: 1,
-                        rotation: 0
-                    });
-                },
-                onLeave: () => {
-                    // Ocultar instantáneamente sin animación cuando la sección sale del viewport (hacia abajo)
-                    gsap.set(nasaModelRef.current, {
-                        opacity: 0
-                    });
-                },
-                onEnterBack: () => {
-                    // Mostrar instantáneamente sin animación cuando vuelve a entrar (scroll hacia arriba)
-                    gsap.set(nasaModelRef.current, {
-                        opacity: 1,
-                        scale: 1,
-                        rotation: 0
-                    });
-                },
-                onLeaveBack: () => {
-                    // Ocultar instantáneamente sin animación cuando sale hacia arriba
-                    gsap.set(nasaModelRef.current, {
-                        opacity: 0
-                    });
-                }
-            });
+            // Configurar estado inicial del badge de texto de NASA
+            if (nasaBadgeRef.current) {
+                gsap.set(nasaBadgeRef.current, {
+                    opacity: 0,
+                    y: 30
+                });
+            }
 
             // Crear timeline con ScrollTrigger
             const tl = gsap.timeline({
@@ -193,6 +167,19 @@ const NTBeyonder = () => {
             }, "-=1")
             .to(astronautRef.current, {
                 opacity: 1,
+                duration: 1.2,
+                ease: "power3.out"
+            }, "-=1")
+            .to(nasaModelRef.current, {
+                opacity: 1,
+                scale: 1,
+                rotation: 0,
+                duration: 1.2,
+                ease: "power3.out"
+            }, "-=1")
+            .to(nasaBadgeRef.current, {
+                opacity: 1,
+                y: 0,
                 duration: 1.2,
                 ease: "power3.out"
             }, "-=1");
@@ -260,7 +247,7 @@ const NTBeyonder = () => {
                         <Environment preset="sunset" />
                     </Canvas>
                     <div className="NTBeyonder-nasa-logo">
-                        <div className="NTBeyonder-nasa-badge">
+                        <div ref={nasaBadgeRef} className="NTBeyonder-nasa-badge">
                             <p className="NTBeyonder-first-place">PRIMER LUGAR</p>
                             <p className="NTBeyonder-chile">CHILE 2025</p>
                         </div>

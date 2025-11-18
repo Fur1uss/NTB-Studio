@@ -8,7 +8,7 @@ import "./Hero.css"
 //Componentes
 import Lanyard from "@/components/ui/lanyard/Lanyard"
 import Button from "@/components/ui/button/Button"
-import InfiniteScrollPhrases from "@/components/textCarousel/TextCarousel"
+import InfiniteScrollPhrases from "@/components/ui/textCarousel/TextCarousel"
 import BubbleMenu from "@/components/ui/bubbleNav/BubbleNav"
 
 // Registrar plugins

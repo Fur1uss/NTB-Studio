@@ -1,0 +1,265 @@
+.essential-container{
+    height: 100vh;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 60px 40px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.essential-content{
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    height: 100%;
+}
+
+.essential-left{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.essential-title{
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-style: italic;
+    color: #000000;
+    margin: 0;
+    line-height: 1;
+}
+
+.essential-description{
+    font-size: 1.2rem;
+    color: #000000;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.essential-features{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.essential-feature-item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+    color: #000000;
+}
+
+.essential-feature-item svg{
+    flex-shrink: 0;
+}
+
+.essential-benefits-title{
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-style: italic;
+    color: #000000;
+    margin: 0;
+    line-height: 1;
+}
+
+.essential-benefits{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.essential-benefit-card{
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.essential-benefit-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-icon{
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
+.essential-benefit-card p{
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #000000;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.highlight-green{
+    color: #20E337;
+}
+
+.essential-right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .essential-container{
+        height: auto;
+        min-height: 100vh;
+        padding: 50px 30px;
+    }
+    
+    .essential-content{
+        grid-template-columns: 1fr;
+        gap: 40px;
+        align-items: flex-start;
+    }
+    
+    .essential-left{
+        gap: 30px;
+    }
+    
+    .essential-title{
+        font-size: 2rem;
+    }
+    
+    .essential-benefits-title{
+        font-size: 2rem;
+    }
+    
+    .essential-description{
+        font-size: 1.1rem;
+    }
+    
+    .essential-right{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .formulario-essential-container{
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .essential-container{
+        padding: 20px 15px;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .essential-content{
+        gap: 25px;
+        align-items: flex-start;
+    }
+    
+    .essential-left{
+        gap: 25px;
+    }
+    
+    .essential-title{
+        font-size: 1.8rem;
+    }
+    
+    .essential-benefits-title{
+        font-size: 1.8rem;
+    }
+    
+    .essential-description{
+        font-size: 1rem;
+    }
+    
+    .essential-features{
+        gap: 12px;
+    }
+    
+    .essential-feature-item{
+        font-size: 0.9rem;
+    }
+    
+    .essential-benefits{
+        gap: 16px;
+    }
+    
+    .essential-benefit-card{
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .benefit-icon{
+        width: 24px;
+        height: 24px;
+    }
+    
+    .essential-benefit-card p{
+        font-size: 0.75rem;
+    }
+    
+    .essential-right{
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .essential-container{
+        padding: 15px 12px;
+    }
+    
+    .essential-content{
+        gap: 20px;
+    }
+    
+    .essential-left{
+        gap: 20px;
+    }
+    
+    .essential-title{
+        font-size: 1.6rem;
+    }
+    
+    .essential-benefits-title{
+        font-size: 1.6rem;
+    }
+    
+    .essential-description{
+        font-size: 0.95rem;
+    }
+    
+    .essential-feature-item{
+        font-size: 0.85rem;
+        gap: 10px;
+    }
+    
+    .essential-feature-item svg{
+        width: 16px;
+        height: 16px;
+    }
+    
+    .essential-benefit-card{
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .benefit-icon{
+        width: 20px;
+        height: 20px;
+    }
+    
+    .essential-benefit-card p{
+        font-size: 0.7rem;
+    }
+}

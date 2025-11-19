@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '@/components/ui/button/Button';
@@ -34,6 +35,7 @@ const StarburstBadge = () => {
 };
 
 const Servicios = () => {
+    const router = useRouter();
     const sectionRef = useRef(null);
     const titleRef = useRef(null);
     const cardsRef = useRef([]);
@@ -93,13 +95,16 @@ const Servicios = () => {
                 y: 30
             });
 
-            // Animación de cambio de fondo de negro a blanco cuando se descubre la sección
+            // Pin de la sección con animación integrada
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: sectionRef.current,
-                    start: "top 80%",
-                    end: "top -20%",
-                    scrub: 1
+                    start: "top top",
+                    end: "+=150vh",
+                    scrub: 1,
+                    pin: true,
+                    pinSpacing: true,
+                    anticipatePin: 1
                 }
             });
 
@@ -151,7 +156,20 @@ const Servicios = () => {
                                 </li>
                             ))}
                         </ul>
-                        <Button className="servicio-card-button">SOLICITAR</Button>
+                        <Button 
+                            className="servicio-card-button"
+                            onClick={() => {
+                                if (servicio.title === "Essential") {
+                                    router.push('/services/Essential');
+                                } else if (servicio.title === "Advanced") {
+                                    router.push('/services/Advanced');
+                                } else if (servicio.title === "Innovated") {
+                                    router.push('/services/Innovated');
+                                }
+                            }}
+                        >
+                            SOLICITAR
+                        </Button>
                     </div>
                 ))}
             </div>

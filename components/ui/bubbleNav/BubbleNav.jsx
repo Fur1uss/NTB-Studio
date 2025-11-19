@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import "./BubbleNav.css"
 
@@ -81,36 +82,46 @@ export default function BubbleMenu({
     const bubbles = bubblesRef.current.filter(Boolean);
     const labels = labelRefs.current.filter(Boolean);
 
-    if (!overlay || !bubbles.length) return;
+    if (!overlay) return;
 
     if (isMenuOpen) {
-      gsap.set(overlay, { display: 'flex' });
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.set(bubbles, { scale: 0, transformOrigin: '50% 50%' });
-      gsap.set(labels, { y: 24, autoAlpha: 0 });
+      // Usar setTimeout para asegurar que el DOM esté listo
+      const timer = setTimeout(() => {
+        const currentBubbles = bubblesRef.current.filter(Boolean);
+        const currentLabels = labelRefs.current.filter(Boolean);
+        
+        if (!currentBubbles.length) return;
+        
+        gsap.set(overlay, { display: 'flex' });
+        gsap.killTweensOf([...currentBubbles, ...currentLabels]);
+        gsap.set(currentBubbles, { scale: 0, transformOrigin: '50% 50%' });
+        gsap.set(currentLabels, { y: 24, autoAlpha: 0 });
 
-      bubbles.forEach((bubble, i) => {
-        const delay = i * staggerDelay + gsap.utils.random(-0.05, 0.05);
-        const tl = gsap.timeline({ delay });
+        currentBubbles.forEach((bubble, i) => {
+          const delay = i * staggerDelay + gsap.utils.random(-0.05, 0.05);
+          const tl = gsap.timeline({ delay });
 
-        tl.to(bubble, {
-          scale: 1,
-          duration: animationDuration,
-          ease: animationEase
+          tl.to(bubble, {
+            scale: 1,
+            duration: animationDuration,
+            ease: animationEase
+          });
+          if (currentLabels[i]) {
+            tl.to(
+              currentLabels[i],
+              {
+                y: 0,
+                autoAlpha: 1,
+                duration: animationDuration,
+                ease: 'power3.out'
+              },
+              `-=${animationDuration * 0.9}`
+            );
+          }
         });
-        if (labels[i]) {
-          tl.to(
-            labels[i],
-            {
-              y: 0,
-              autoAlpha: 1,
-              duration: animationDuration,
-              ease: 'power3.out'
-            },
-            `-=${animationDuration * 0.9}`
-          );
-        }
-      });
+      }, 0);
+      
+      return () => clearTimeout(timer);
     } else if (showOverlay) {
       gsap.killTweensOf([...bubbles, ...labels]);
       gsap.to(labels, {
@@ -166,45 +177,120 @@ export default function BubbleMenu({
           <span className="menu-line short" style={{ background: menuContentColor }} />
         </button>
       </nav>
-      {showOverlay && (
-        <div
-          ref={overlayRef}
-          className={`bubble-menu-items ${useFixedPosition ? 'fixed' : 'absolute'} ${isMenuOpen ? 'menu-open' : ''}`}
-          aria-hidden={!isMenuOpen}
-        >
+      <div
+        ref={overlayRef}
+        className={`bubble-menu-items ${useFixedPosition ? 'fixed' : 'absolute'} ${isMenuOpen ? 'menu-open' : ''}`}
+        aria-hidden={!isMenuOpen}
+        style={{ display: 'none' }}
+      >
           <ul className="pill-list" role="menu" aria-label="Menu links">
-            {menuItems.map((item, idx) => (
-              <li key={idx} role="none" className="pill-col">
-                <a
-                  role="menuitem"
-                  href={item.href}
-                  aria-label={item.ariaLabel || item.label}
-                  className="pill-link"
-                  style={{
-                    '--item-rot': `${item.rotation ?? 0}deg`,
-                    '--pill-bg': menuBg,
-                    '--pill-color': menuContentColor,
-                    '--hover-bg': item.hoverStyles?.bgColor || '#f3f4f6',
-                    '--hover-color': item.hoverStyles?.textColor || menuContentColor
-                  }}
-                  ref={el => {
-                    if (el) bubblesRef.current[idx] = el;
-                  }}
-                >
-                  <span
-                    className="pill-label"
+            {menuItems.map((item, idx) => {
+              const handleClick = (e) => {
+                if (item.href && item.href.startsWith('#')) {
+                  e.preventDefault();
+                  const targetId = item.href.substring(1);
+                  const targetElement = document.getElementById(targetId);
+                  
+                  if (targetElement) {
+                    // Cerrar el menú primero
+                    setIsMenuOpen(false);
+                    
+                    // Calcular posición después del efecto de descubrimiento
+                    setTimeout(() => {
+                      // Buscar el ScrollTrigger asociado a esta sección o sus hijos
+                      const triggers = ScrollTrigger.getAll();
+                      let targetTrigger = null;
+                      
+                      // Buscar el trigger que está dentro del elemento target o en sus hijos
+                      triggers.forEach(trigger => {
+                        const triggerElement = trigger.trigger;
+                        if (triggerElement) {
+                          // Verificar si el trigger está dentro del elemento target
+                          if (targetElement.contains(triggerElement) || 
+                              triggerElement === targetElement ||
+                              (triggerElement.closest && triggerElement.closest(`#${targetId}`))) {
+                            // Verificar si tiene pin activo
+                            if (trigger.pin) {
+                              targetTrigger = trigger;
+                            }
+                          }
+                        }
+                      });
+                      
+                      // Si hay un ScrollTrigger con pin, calcular el offset
+                      if (targetTrigger) {
+                        // Obtener los valores de start y end del trigger
+                        // start y end son funciones que devuelven valores en píxeles
+                        const start = typeof targetTrigger.start === 'function' 
+                          ? targetTrigger.start() 
+                          : (typeof targetTrigger.start === 'number' ? targetTrigger.start : window.scrollY);
+                        const end = typeof targetTrigger.end === 'function' 
+                          ? targetTrigger.end() 
+                          : (typeof targetTrigger.end === 'number' ? targetTrigger.end : window.scrollY);
+                        
+                        const pinDuration = Math.max(0, end - start);
+                        
+                        // Si la duración es significativa (más de 100px), usar offset
+                        if (pinDuration > 100) {
+                          // Scroll a la posición después del pin
+                          const targetPosition = targetElement.offsetTop + pinDuration;
+                          
+                          window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                          });
+                        } else {
+                          // Si la duración es pequeña, scroll normal
+                          targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                          });
+                        }
+                      } else {
+                        // Si no hay pin, scroll normal
+                        targetElement.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start'
+                        });
+                      }
+                    }, 100);
+                  }
+                }
+              };
+
+              return (
+                <li key={idx} role="none" className="pill-col">
+                  <a
+                    role="menuitem"
+                    href={item.href}
+                    aria-label={item.ariaLabel || item.label}
+                    className="pill-link"
+                    onClick={handleClick}
+                    style={{
+                      '--item-rot': `${item.rotation ?? 0}deg`,
+                      '--pill-bg': menuBg,
+                      '--pill-color': menuContentColor,
+                      '--hover-bg': item.hoverStyles?.bgColor || '#f3f4f6',
+                      '--hover-color': item.hoverStyles?.textColor || menuContentColor
+                    }}
                     ref={el => {
-                      if (el) labelRefs.current[idx] = el;
+                      if (el) bubblesRef.current[idx] = el;
                     }}
                   >
-                    {item.label}
-                  </span>
-                </a>
-              </li>
-            ))}
+                    <span
+                      className="pill-label"
+                      ref={el => {
+                        if (el) labelRefs.current[idx] = el;
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
-      )}
     </>
   );
 }

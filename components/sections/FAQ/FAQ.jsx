@@ -1,10 +1,31 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./FAQ.css";
+
+// Registrar plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const FAQ = () => {
     const [openIndex, setOpenIndex] = useState(null);
+    const sectionRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            ScrollTrigger.create({
+                trigger: sectionRef.current,
+                start: "top top",
+                end: "+=150vh",
+                pin: true,
+                pinSpacing: true,
+                anticipatePin: 1
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
 
     const faqs = [
         {
@@ -34,7 +55,7 @@ const FAQ = () => {
     };
 
     return (
-        <section className="faq-section">
+        <section ref={sectionRef} className="faq-section">
             <div className="faq-decorative-star">
                 <img src="/star.webp" alt="Decorative star" />
             </div>

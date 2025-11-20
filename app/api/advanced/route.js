@@ -3,8 +3,6 @@ import { render } from '@react-email/render';
 import React from 'react';
 import { FormSubmissionEmailAdvanced } from '../../../emails/FormSubmissionEmailAdvanced';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request) {
   try {
     const formData = await request.json();
@@ -25,6 +23,9 @@ export async function POST(request) {
         { status: 500 }
       );
     }
+
+    // Inicializar Resend solo cuando se necesite (lazy initialization)
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Renderizar el email con React Email
     const emailHtml = await render(

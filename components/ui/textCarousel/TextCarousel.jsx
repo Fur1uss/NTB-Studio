@@ -27,7 +27,7 @@ export default function InfiniteScrollPhrases() {
               <div style={styles.imageContainer}>
                 <img 
                   src={separatorImage} 
-                  alt="separator" 
+                  alt="Separador decorativo" 
                   style={styles.image}
                 />
               </div>
@@ -45,7 +45,7 @@ export default function InfiniteScrollPhrases() {
               <div style={styles.imageContainer}>
                 <img 
                   src={separatorImage} 
-                  alt="separator" 
+                  alt="Separador decorativo" 
                   style={styles.image}
                 />
               </div>

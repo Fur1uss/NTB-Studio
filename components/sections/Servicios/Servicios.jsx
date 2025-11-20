@@ -23,7 +23,7 @@ const StarburstBadge = () => {
         <>
             <img 
                 src="/peoplechoise.webp" 
-                alt="People Choise Badge" 
+                alt="People Choice Badge - Premio de elección popular para NTB Studio" 
                 className="starburst-image"
             />
             <div className="starburst-text">

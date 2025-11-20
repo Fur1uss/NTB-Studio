@@ -105,7 +105,7 @@ const Hero = () => {
 
                 <div className="header-interative-container">
                     <div>
-                        <img src="./NTBLogo.svg" alt="" />
+                        <img src="./NTBLogo.svg" alt="NTB Studio - Logo de la agencia de desarrollo web e innovación digital" />
                         <h1>Conectamos ideas mientras <br /> generamos innovación</h1>
                     </div>
                     <Button onClick={handleExploreClick}>Explorar soluciones</Button>

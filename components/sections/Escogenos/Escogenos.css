@@ -82,13 +82,22 @@ b{
     background: white;
     border-radius: 30px;
     padding: 16px 24px;
-    font-size: 26px;
+    font-size: clamp(18px, 2vw, 26px);
     font-weight: 700;
     color: #333;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: absolute;
     white-space: nowrap;
     animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: calc(100vw - 40px);
+    box-sizing: border-box;
+}
+
+.badge:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes float {
@@ -101,104 +110,250 @@ b{
 }
 
 .badge:nth-child(1) {
-    top: 15%;
-    left: 25%;
+    top: 10%;
+    left: 10%;
     animation-delay: 0s;
 }
 
 .badge:nth-child(2) {
-    top: 25%;
-    right: 25%;
+    top: 20%;
+    right: 10%;
     animation-delay: 0.6s;
 }
 
 .badge:nth-child(3) {
-    top: 35%;
-    left: 20%;
+    top: 40%;
+    left: 5%;
     animation-delay: 1.2s;
 }
 
 .badge:nth-child(4) {
-    top: 45%;
-    right: 20%;
+    top: 50%;
+    right: 5%;
     animation-delay: 1.8s;
 }
 
 .badge:nth-child(5) {
-    top: 55%;
-    left: 30%;
+    top: 70%;
+    left: 15%;
     animation-delay: 2.4s;
 }
 
-/* Mobile y Tablet */
-@media (max-width: 1024px) {
+/* Pantallas muy grandes - ajustar posiciones */
+@media (min-width: 1600px) {
+    .badge:nth-child(1) {
+        left: 15%;
+    }
+    
+    .badge:nth-child(2) {
+        right: 15%;
+    }
+    
+    .badge:nth-child(3) {
+        left: 10%;
+    }
+    
+    .badge:nth-child(4) {
+        right: 10%;
+    }
+    
+    .badge:nth-child(5) {
+        left: 20%;
+    }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
     .escogenos-section {
         grid-template-columns: 1fr;
-        grid-template-rows: 30vh 50vh 20vh;
+        grid-template-rows: 25vh 55vh 20vh;
     }
     
     .escogenos-texts-container h2,
     .escogenos-texts-container p {
         grid-column: 1;
-        padding-left: 20px;
+        padding-left: 40px;
     }
     
     .escogenos-images-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 20px;
-        position: static;
+        gap: 30px;
+        position: relative;
     }
     
     .escogenos-image-01, .escogenos-image-02 {
-        position: static;
-        width: 40vw;
-        min-width: 150px;
+        position: relative;
+        width: 35vw;
+        min-width: 180px;
         padding: 0;
         margin: 0;
         right: auto;
         left: auto;
     }
     
+    .escogenos-image-01 {
+        padding-bottom: 0;
+    }
+    
+    .escogenos-image-02 {
+        padding-top: 0;
+        position: relative;
+        left: auto;
+        top: auto;
+    }
+    
     .escogenos-badges-container {
+        position: relative;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap: 15px;
-        padding: 15px;
+        gap: 12px;
+        padding: 10px 20px;
     }
     
     .badge {
         position: static;
         transform: none;
         margin: 0;
-        font-size: 20px;
-        padding: 8px;
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
+        font-size: 18px;
+        padding: 10px 16px;
+        border-radius: 25px;
+        width: auto;
+        height: auto;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease 0.2s;
-        overflow: hidden;
+        gap: 8px;
+        transition: all 0.3s ease;
+        overflow: visible;
     }
     
     .badge-emoji {
-        font-size: 18px;
-        transition: opacity 0.2s ease 0.1s;
+        font-size: 20px;
+        transition: opacity 0.2s ease;
     }
     
     .badge-text {
-        position: absolute;
-        opacity: 0;
-        font-size: 14px;
+        position: static;
+        opacity: 1;
+        font-size: 16px;
         font-weight: 700;
         white-space: nowrap;
-        transition: opacity 0.2s ease 0.3s;
-        pointer-events: none;
+        transition: opacity 0.2s ease;
+        pointer-events: auto;
+    }
+    
+    .badge {
+        cursor: pointer;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .escogenos-section {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        min-height: 100vh;
+        height: auto;
+    }
+    
+    .escogenos-texts-container {
+        padding: 20px;
+    }
+    
+    .escogenos-texts-container h2,
+    .escogenos-texts-container p {
+        grid-column: 1;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .escogenos-texts-container h2 {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+        padding-bottom: 10px;
+    }
+    
+    .escogenos-texts-container p {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+    }
+    
+    .escogenos-images-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+        padding: 20px;
+        min-height: 200px;
+    }
+    
+    .escogenos-image-01, .escogenos-image-02 {
+        position: relative;
+        width: 40vw;
+        min-width: 120px;
+        max-width: 180px;
+        padding: 0;
+        margin: 0;
+        right: auto;
+        left: auto;
+    }
+    
+    .escogenos-image-01 {
+        padding-bottom: 0;
+    }
+    
+    .escogenos-image-02 {
+        padding-top: 0;
+        position: relative;
+        left: auto;
+        top: auto;
+    }
+    
+    .escogenos-badges-container {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 15px;
+        min-height: auto;
+    }
+    
+    .badge {
+        position: static;
+        transform: none;
+        margin: 0;
+        font-size: 14px;
+        padding: 8px 14px;
+        border-radius: 20px;
+        width: auto;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        overflow: visible;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .badge-emoji {
+        font-size: 16px;
+        transition: opacity 0.2s ease;
+    }
+    
+    .badge-text {
+        position: static;
+        opacity: 1;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: opacity 0.2s ease;
+        pointer-events: auto;
     }
     
     .badge {
@@ -206,20 +361,6 @@ b{
     }
     
     .badge.active {
-        border-radius: 25px;
-        width: auto;
-        padding: 12px 20px;
-        transition: all 0.3s ease 0s;
-    }
-    
-    .badge.active .badge-emoji {
-        opacity: 0;
-        transition: opacity 0.1s ease 0s;
-    }
-    
-    .badge.active .badge-text {
-        opacity: 1;
-        pointer-events: auto;
-        transition: opacity 0.2s ease 0.1s;
+        transform: scale(1.05);
     }
 }

@@ -38,8 +38,8 @@ const Escogenos = () => {
                 <p>Trabajamos con pasión, diseño e innovación para transformar ideas en <br /> experiencias digitales únicas.</p>
             </div>
             <div className="escogenos-images-container">
-                <img className="escogenos-image-01" src="./photo-us01.webp" alt="" />
-                <img className="escogenos-image-02" src="./photo-us02.webp" alt="" />
+                <img className="escogenos-image-01" src="./photo-us01.webp" alt="Equipo de trabajo de NTB Studio desarrollando proyectos digitales" />
+                <img className="escogenos-image-02" src="./photo-us02.webp" alt="Equipo NTB Studio colaborando en innovación y desarrollo web" />
             </div>
             <div className="escogenos-badges-container">
                 <div 

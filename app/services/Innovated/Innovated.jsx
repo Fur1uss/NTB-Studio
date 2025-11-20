@@ -1,11 +1,35 @@
 "use client";
 
 import FormularioInnovated from "@/components/ui/formularioInnovated/FormularioInnovated";
+import ServiceStructuredData from "@/components/ui/ServiceStructuredData/ServiceStructuredData";
+import Breadcrumbs from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import "./Innovated.css";
 
 const Innovated = () => {
+    const breadcrumbsItems = [
+        { name: "Inicio", url: "/" },
+        { name: "Servicios", url: "/#servicios" },
+        { name: "Innovated", url: "/services/innovated" }
+    ];
+
     return (
-        <div className="innovated-container">
+        <>
+            <Breadcrumbs items={breadcrumbsItems} />
+            <ServiceStructuredData
+                serviceName="Innovated - Desarrollo de MVP y Productos Digitales"
+                description="Asesoría técnica, diseño y desarrollo de MVP, arquitectura escalable y prototipos interactivos. Entrega en 6-12 semanas."
+                features={[
+                    "Asesoría técnica a medida",
+                    "Diseño y desarrollo de MVP",
+                    "Arquitectura base escalable",
+                    "Prototipo interactivo o versión beta funcional",
+                    "Seguimiento técnico y ajustes post-lanzamiento",
+                    "Revisión estratégica de viabilidad y crecimiento"
+                ]}
+                deliveryTime="6-12 semanas"
+                priceRange="Consultar"
+            />
+            <div className="innovated-container">
             <div className="innovated-content">
                 <div className="innovated-left">
                     <h1 className="innovated-title">Innovated</h1>
@@ -81,6 +105,7 @@ const Innovated = () => {
                 </div>
             </div>
         </div>
+        </>
     )
 }
 

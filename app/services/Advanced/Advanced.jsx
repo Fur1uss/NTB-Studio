@@ -1,11 +1,34 @@
 "use client";
 
 import FormularioAdvanced from "@/components/ui/formularioAdvanced/FormularioAdvanced";
+import ServiceStructuredData from "@/components/ui/ServiceStructuredData/ServiceStructuredData";
+import Breadcrumbs from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import "./Advanced.css";
 
 const Advanced = () => {
+    const breadcrumbsItems = [
+        { name: "Inicio", url: "/" },
+        { name: "Servicios", url: "/#servicios" },
+        { name: "Advanced", url: "/services/advanced" }
+    ];
+
     return (
-        <div className="advanced-container">
+        <>
+            <Breadcrumbs items={breadcrumbsItems} />
+            <ServiceStructuredData
+                serviceName="Advanced - Desarrollo Web Avanzado"
+                description="Aplicaciones web completas con integración de APIs, bases de datos escalables, sistemas de roles y permisos. Entrega en 4-8 semanas."
+                features={[
+                    "Aplicaciones web completas",
+                    "Integración con APIs externas",
+                    "Base de datos escalable y segura",
+                    "Sistema de roles y permisos",
+                    "Mantenimiento técnico por 60 días"
+                ]}
+                deliveryTime="4-8 semanas"
+                priceRange="Consultar"
+            />
+            <div className="advanced-container">
             <div className="advanced-content">
                 <div className="advanced-left">
                     <h1 className="advanced-title">Advanced</h1>
@@ -75,6 +98,7 @@ const Advanced = () => {
                 </div>
             </div>
         </div>
+        </>
     )
 }
 

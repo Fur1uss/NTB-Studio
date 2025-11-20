@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./Nosotros.css";
@@ -12,12 +12,10 @@ gsap.registerPlugin(ScrollTrigger);
 const miembros = [
   {
     id: 1,
-    nombre: "Cesar",
+    nombre: "César",
     bio: "La mente creativa detrás de nuestros diseños. Fanática del café y los pixeles perfectos.",
     fotosAnimacion: [
-      "/ruta/placeholder/ana-1.jpg",
-      "/ruta/placeholder/ana-2.jpg",
-      "/ruta/placeholder/ana-3.jpg"
+      "/cesar.webp"
     ]
   },
   {
@@ -25,9 +23,7 @@ const miembros = [
     nombre: "Isidora",
     bio: "Nuestro gurú del código. Convierte los problemas en soluciones y el café en código.",
     fotosAnimacion: [
-      "/ruta/placeholder/bruno-1.jpg",
-      "/ruta/placeholder/bruno-2.jpg",
-      "/ruta/placeholder/bruno-3.jpg"
+      "/isi.webp"
     ]
   },
   {
@@ -35,9 +31,7 @@ const miembros = [
     nombre: "Marcelo",
     bio: "La estratega que nos mantiene enfocados. Nada se le escapa.",
     fotosAnimacion: [
-      "/ruta/placeholder/carla-1.jpg",
-      "/ruta/placeholder/carla-2.jpg",
-      "/ruta/placeholder/carla-3.jpg"
+      "/marce.webp"
     ]
   },
   {
@@ -45,9 +39,7 @@ const miembros = [
     nombre: "Cristian",
     bio: "El experto en datos. Si se puede medir, David puede mejorarlo.",
     fotosAnimacion: [
-      "/ruta/placeholder/david-1.jpg",
-      "/ruta/placeholder/david-2.jpg",
-      "/ruta/placeholder/david-3.jpg"
+      "/zoro.webp"
     ]
   },
   {
@@ -55,16 +47,13 @@ const miembros = [
     nombre: "Maximiliano",
     bio: "La voz de nuestros usuarios. Se asegura de que todo lo que hacemos tenga sentido.",
     fotosAnimacion: [
-      "/ruta/placeholder/elena-1.jpg",
-      "/ruta/placeholder/elena-2.jpg",
-      "/ruta/placeholder/elena-3.jpg"
+      "/maxi.webp"
     ]
   }
 ];
 
 // --- Componente ---
 const Nosotros = () => {
-  const [miembroSeleccionado, setMiembroSeleccionado] = useState(null);
   const sectionRef = useRef(null);
   const memberRefs = useRef([]);
   memberRefs.current = [];
@@ -103,12 +92,10 @@ const Nosotros = () => {
             const nombreEl = memberEl.querySelector(".miembro-nombre");
             const photoDiv = memberEl.querySelector(".miembro-foto-flipbook");
             
-            // Estado inicial: barra completamente colapsada desde abajo
-            // Usamos scaleY para un crecimiento visible desde abajo
+            // Estado inicial: barra visible pero imagen fuera de vista (abajo)
             gsap.set(memberEl, { 
-              scaleY: 0,
-              opacity: 1, // Visible para ver el crecimiento
-              transformOrigin: 'bottom center'
+              opacity: 1,
+              clearProps: "transition"
             });
             
             // Estado inicial del nombre (arriba, invisible y con movimiento)
@@ -118,10 +105,11 @@ const Nosotros = () => {
               scale: 0.8
             });
             
-            // Estado inicial de la foto
+            // Estado inicial de la foto: fuera de vista abajo, manteniendo su tamaño
             gsap.set(photoDiv, {
               opacity: 0,
-              scale: 0.9
+              y: "100%", // Comienza completamente abajo, fuera de vista
+              scale: 1
             });
           });
 
@@ -140,20 +128,15 @@ const Nosotros = () => {
               duration: 0.8
             }, index * 0.4); // Espaciado entre nombres
 
-            // 2. Crecimiento de la barra desde abajo hacia arriba (scaleY visible)
-            tl.to(memberEl, {
-              scaleY: 1,
-              ease: "power2.out",
-              duration: 1.2
-            }, "<+=0.1"); // Empieza poco después del nombre
-
-            // 3. Aparición de la foto dentro de la barra (mientras crece)
+            // 2. La imagen aparece desde abajo, como si se asomara, sin cambiar tamaño
             tl.to(photoDiv, {
               opacity: 1,
-              scale: 1,
+              y: 0, // Se desliza desde abajo (100%) hasta su posición final (0)
               ease: "power2.out",
-              duration: 0.8
-            }, "<+=0.3"); // Aparece mientras la barra crece
+              duration: 1.2,
+              force3D: true,
+              clearProps: "transition"
+            }, "<+=0.1"); // Empieza poco después del nombre
 
             // 4. Animación "Cómica" (Flipbook) - más dinámica
             const flipbookTl = gsap.timeline({ repeat: 2, repeatDelay: 0.1 });
@@ -174,10 +157,8 @@ const Nosotros = () => {
             
             // Estado inicial
             gsap.set(memberEl, {
-              opacity: 0,
-              y: 30,
-              scaleY: 0,
-              transformOrigin: 'bottom center'
+              opacity: 1,
+              clearProps: "transition"
             });
             
             gsap.set(nombreEl, {
@@ -185,8 +166,10 @@ const Nosotros = () => {
               y: -20
             });
             
+            // La imagen comienza fuera de vista abajo
             gsap.set(photoDiv, {
-              opacity: 0
+              opacity: 0,
+              y: "100%"
             });
             
             // Animación al scrollear
@@ -198,24 +181,21 @@ const Nosotros = () => {
               }
             });
             
-            tl.to(memberEl, {
+            // La imagen aparece desde abajo, como si se asomara
+            tl.to(photoDiv, {
               opacity: 1,
               y: 0,
-              scaleY: 1,
               duration: 0.8,
-              ease: "power2.out"
+              ease: "power2.out",
+              force3D: true,
+              clearProps: "transition"
             })
             .to(nombreEl, {
               opacity: 1,
               y: 0,
               duration: 0.5,
               ease: "power2.out"
-            }, "-=0.4")
-            .to(photoDiv, {
-              opacity: 1,
-              duration: 0.5,
-              ease: "power2.out"
-            }, "-=0.3");
+            }, "-=0.4");
           });
         },
 
@@ -228,10 +208,8 @@ const Nosotros = () => {
             
             // Estado inicial
             gsap.set(memberEl, {
-              opacity: 0,
-              y: 30,
-              scaleY: 0,
-              transformOrigin: 'bottom center'
+              opacity: 1,
+              clearProps: "transition"
             });
             
             gsap.set(nombreEl, {
@@ -239,8 +217,10 @@ const Nosotros = () => {
               y: -20
             });
             
+            // La imagen comienza fuera de vista abajo
             gsap.set(photoDiv, {
-              opacity: 0
+              opacity: 0,
+              y: "100%"
             });
             
             // Animación al scrollear
@@ -252,24 +232,21 @@ const Nosotros = () => {
               }
             });
             
-            tl.to(memberEl, {
+            // La imagen aparece desde abajo, como si se asomara
+            tl.to(photoDiv, {
               opacity: 1,
               y: 0,
-              scaleY: 1,
               duration: 0.8,
-              ease: "power2.out"
+              ease: "power2.out",
+              force3D: true,
+              clearProps: "transition"
             })
             .to(nombreEl, {
               opacity: 1,
               y: 0,
               duration: 0.5,
               ease: "power2.out"
-            }, "-=0.4")
-            .to(photoDiv, {
-              opacity: 1,
-              duration: 0.5,
-              ease: "power2.out"
-            }, "-=0.3");
+            }, "-=0.4");
           });
         }
         
@@ -281,15 +258,11 @@ const Nosotros = () => {
     return () => ctx.revert();
   }, []);
 
-  // --- Manejadores de Modal ---
-  const abrirModal = (miembro) => setMiembroSeleccionado(miembro);
-  const cerrarModal = () => setMiembroSeleccionado(null);
-
   return (
     <section className="nosotros-section" ref={sectionRef}>
       
       <div className="nosotros-titulos">
-        <h3>Ademas...</h3>
+        <h3>Además...</h3>
         <h2>Somos familia</h2>
       </div>
 
@@ -299,7 +272,6 @@ const Nosotros = () => {
             key={miembro.id}
             className="miembro-barra"
             ref={addToRefs}
-            onClick={() => abrirModal(miembro)}
           >
             <span className="miembro-nombre">{miembro.nombre}</span>
             <div 
@@ -309,23 +281,6 @@ const Nosotros = () => {
           </div>
         ))}
       </div>
-
-      {/* --- Modal --- */}
-      {miembroSeleccionado && (
-        <div className="modal-overlay" onClick={cerrarModal}>
-          <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-boton-cerrar" onClick={cerrarModal}>
-              &times;
-            </button>
-            <div 
-              className="modal-imagen"
-              style={{ backgroundImage: `url(${miembroSeleccionado.fotosAnimacion[0]})` }}
-            ></div>
-            <h2>{miembroSeleccionado.nombre}</h2>
-            <p>{miembroSeleccionado.bio}</p>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

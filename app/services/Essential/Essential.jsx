@@ -1,11 +1,34 @@
 "use client";
 
 import FormularioEssential from "@/components/ui/formularioEssential/FormularioEssential";
+import ServiceStructuredData from "@/components/ui/ServiceStructuredData/ServiceStructuredData";
+import Breadcrumbs from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import "./Essential.css";
 
 const Essential = () => {
+    const breadcrumbsItems = [
+        { name: "Inicio", url: "/" },
+        { name: "Servicios", url: "/#servicios" },
+        { name: "Essential", url: "/services/essential" }
+    ];
+
     return (
-        <div className="essential-container">
+        <>
+            <Breadcrumbs items={breadcrumbsItems} />
+            <ServiceStructuredData
+                serviceName="Essential - Desarrollo Web Básico"
+                description="Landing Pages y SPAs modernas con panel de administración, base de datos, hosting y soporte técnico. Entrega en 1-3 semanas."
+                features={[
+                    "Landing Page o SPA",
+                    "Panel de administración",
+                    "Soporte técnico por 30 días",
+                    "Base de datos o API",
+                    "Hosting y despliegue"
+                ]}
+                deliveryTime="1-3 semanas"
+                priceRange="Consultar"
+            />
+            <div className="essential-container">
             <div className="essential-content">
                 <div className="essential-left">
                     <h1 className="essential-title">Essential</h1>
@@ -75,6 +98,7 @@ const Essential = () => {
                 </div>
             </div>
         </div>
+        </>
     )
 }
 

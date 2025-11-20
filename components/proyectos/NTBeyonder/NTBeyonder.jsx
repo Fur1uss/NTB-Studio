@@ -206,7 +206,7 @@ const NTBeyonder = () => {
             <div ref={astronautRef} className="NTBeyonder-astronaut">
                 <img 
                     src="/astronaut.webp" 
-                    alt="Astronaut floating" 
+                    alt="Astronauta flotando representando innovación y exploración espacial del proyecto NTBeyonder" 
                     className="NTBeyonder-astronaut-image"
                 />
             </div>
@@ -215,7 +215,7 @@ const NTBeyonder = () => {
                     <div className="NTBeyonder-content-text-project">
                         <p className="proyecto-font">Proyecto</p>                    
                         <h2 className={leagueGothic.className}><b>NTB</b>eyonder</h2>
-                        <p className="NTBeyonder-content-text-project-description">Corem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+                        <p className="NTBeyonder-content-text-project-description">NTBeyonder, busca acercar los enormes conjuntos de datos visuales de la NASA a todas las personas mediante una plataforma interactiva que combina imágenes satelitales, exploración 3D y un asistente con inteligencia artificial que permite “hablar” con los planetas. </p>
                     </div>
 
                     <div className="NTBeyonder-content-text-image">

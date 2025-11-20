@@ -176,7 +176,7 @@ const NTBsticker = () => {
                     <div className="NTBsticker-content-text-project">
                         <p className="proyecto-font">Proyecto</p>                    
                         <h2 className={leagueGothic.className}><b>NTB</b> STICKER SUPAFINDING</h2>
-                        <p className="NTBsticker-content-text-project-description">Corem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+                        <p className="NTBsticker-content-text-project-description">Juego web interactivo donde debes encontrar stickers en un mural aleatorio antes de que se acabe el tiempo. Compite en el scoreboard global, sube tu sticker personalizado y demuestra tu creatividad. Protegido con inteligencia artificial para moderación automática de contenido.</p>
                     </div>
 
                     <div className="NTBsticker-content-text-video">

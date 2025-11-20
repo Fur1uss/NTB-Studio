@@ -7,12 +7,12 @@
   position: relative;
   z-index: 1;
   
-  /* Estructura Flex: Centra el wrapper verticalmente */
+  /* Estructura Flex: Centra el wrapper verticalmente, pero más arriba */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 100px 5vw; /* Padding vertical y horizontal */
+  padding: 80px 5vw 100px 5vw; /* Padding superior reducido para subir el contenido */
   box-sizing: border-box;
 }
 
@@ -42,14 +42,14 @@
   display: flex;
   width: 100%;
   max-width: 1200px;
-  height: 60vh; /* Altura fija para el contenedor de barras */
+  height: 70vh; /* Altura aumentada para que las imágenes se vean más grandes */
   gap: 2vw;
   padding-top: 60px; /* Espacio para los nombres arriba */
   padding-bottom: 40px; /* Espacio para el difuminado inferior */
   
   /* REQUISITOS DE ESTILO: */
   justify-content: center; /* Centradas */
-  align-items: flex-end;   /* Pegadas al borde inferior */
+  align-items: center;   /* Centradas verticalmente en lugar de pegadas al fondo */
   position: relative;
   overflow: visible; /* Permitir que nombres y difuminado sean visibles */
 }
@@ -58,9 +58,9 @@
 .miembro-barra {
   flex: 1;
   max-width: 18%;
-  background-color: #ECECEC; /* Barra gris claro */
+  height: 80%; /* Altura uniforme para todas las barras */
+  background-color: transparent; /* Fondo transparente para mostrar las imágenes */
   border-radius: 0 0 12px 12px;
-  cursor: pointer;
   
   /* Estado inicial para GSAP (en desktop) - será sobrescrito por GSAP */
   display: flex;
@@ -70,8 +70,8 @@
   align-self: flex-end; /* Asegurar que crezca desde abajo */
   /* No usar overflow: hidden para que el difuminado sea visible */
   
-  /* Transición para hover (no afecta a GSAP) */
-  transition: box-shadow 0.3s ease;
+  /* Transición solo para hover, no interfiere con GSAP */
+  transition: transform 0.3s ease;
 }
 
 /* Efecto difuminado blanco en el borde inferior - como si saliera de la pantalla */
@@ -95,24 +95,15 @@
 }
 
 .miembro-barra:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05) !important;
 }
 
 .miembro-barra:hover .miembro-nombre {
   transform: translateX(-50%) translateY(-5px);
   color: #000;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
-/* Alturas variables (como en el mockup) */
-.miembro-barra:nth-child(1) { height: 60%; }
-
-.miembro-barra:nth-child(2) { height: 75%; }
-
-.miembro-barra:nth-child(3) { height: 90%; }
-
-.miembro-barra:nth-child(4) { height: 70%; }
-
-.miembro-barra:nth-child(5) { height: 65%; }
 
 .miembro-nombre {
   text-align: center;
@@ -131,13 +122,35 @@
 
 .miembro-foto-flipbook {
   width: 100%;
-  height: 85%;
+  height: 100%;
   background-size: cover;
-  background-position: center 20%;
+  background-position: center center;
   background-repeat: no-repeat;
   border-radius: 0 0 12px 12px;
   position: relative;
   z-index: 0;
+  overflow: hidden;
+}
+
+/* Efecto de niebla en el fondo de la imagen */
+.miembro-foto-flipbook::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to top, 
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.85) 20%,
+    rgba(255, 255, 255, 0.6) 40%,
+    rgba(255, 255, 255, 0.3) 60%,
+    rgba(255, 255, 255, 0.1) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 0 0 12px 12px;
 }
 
 /* --- Responsive (Tablet) --- */
@@ -168,7 +181,7 @@
     flex: 1;
     max-width: 18%; /* Mantener proporciones */
     /* Las alturas se mantienen con porcentajes (60%, 75%, etc.) */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
   }
 
   .miembro-nombre {
@@ -181,7 +194,7 @@
   }
 
   .miembro-foto-flipbook {
-    height: 85%;
+    height: 100%;
   }
 
   /* Difuminado también en tablet */
@@ -219,7 +232,7 @@
     flex: 1;
     max-width: 18%; /* Mantener proporciones */
     /* Las alturas se mantienen con porcentajes (60%, 75%, etc.) */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
   }
 
   .miembro-nombre {
@@ -232,7 +245,7 @@
   }
 
   .miembro-foto-flipbook {
-    height: 85%;
+    height: 100%;
   }
 
   /* Difuminado también en móvil */

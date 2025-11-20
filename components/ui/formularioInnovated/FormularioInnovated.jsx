@@ -186,13 +186,31 @@ const FormularioInnovated = () => {
     const handleSubmit = async () => {
         if (validateStep(7)) {
             setIsSubmitting(true);
-            setTimeout(() => {
+            try {
+                const response = await fetch('/api/innovated', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Error al enviar el formulario');
+                }
+
                 setIsSubmitting(false);
                 setIsSubmitted(true);
                 setTimeout(() => {
                     router.push('/');
                 }, 3000);
-            }, 2000);
+            } catch (error) {
+                console.error('Error:', error);
+                setIsSubmitting(false);
+                alert('Hubo un error al enviar el formulario. Por favor, intenta nuevamente.');
+            }
         }
     };
 

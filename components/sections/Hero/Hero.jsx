@@ -9,6 +9,7 @@ import "./Hero.css"
 import Lanyard from "@/components/ui/lanyard/Lanyard"
 import Button from "@/components/ui/button/Button"
 import InfiniteScrollPhrases from "@/components/ui/textCarousel/TextCarousel"
+import BackgroundV4 from "@/components/ui/background-v4/BackgroundV4"
 
 // Registrar plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -96,6 +97,7 @@ const Hero = () => {
 
     return (
         <header ref={headerRef}>
+            <BackgroundV4 />
             <div className="header-lanyard-container">
                 <Lanyard overlay sceneOffset={[2, .5, 0]} position={[0, 0, 10]} gravity={[0, -40, 0]} />
             </div>

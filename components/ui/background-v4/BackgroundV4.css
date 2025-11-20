@@ -1,0 +1,25 @@
+.background-v4-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #20E337; /* Fondo verde */
+  overflow: hidden;
+  z-index: 0; /* Detrás del lanyard (z-index: 1) y contenido (z-index: 2) */
+  cursor: default;
+}
+
+.background-v4-grid-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Creamos un patrón de puntos con CSS puro */
+  background-image: radial-gradient(#ffffff 1.55px, transparent 1.55px);
+  background-size: 30px 30px; /* Distancia entre puntos */
+  opacity: 0.5; /* Puntos más visibles y blancos */
+  z-index: 1;
+}
+

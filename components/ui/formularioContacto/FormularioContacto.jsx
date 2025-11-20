@@ -25,17 +25,90 @@ const FormularioContacto = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({
             ...prev,
             [field]: value
         }));
+        // Limpiar error del campo cuando el usuario empieza a escribir
+        if (errors[field]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+        }
+    };
+
+    const validateStep = (step) => {
+        const newErrors = {};
+        
+        switch (step) {
+            case 1:
+                if (!formData.nombreCompleto.trim()) {
+                    newErrors.nombreCompleto = 'El nombre completo es requerido';
+                }
+                if (!formData.correo.trim()) {
+                    newErrors.correo = 'El correo es requerido';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
+                    newErrors.correo = 'El correo no es válido';
+                }
+                if (!formData.telefono.trim()) {
+                    newErrors.telefono = 'El teléfono es requerido';
+                } else if (!/^\+?[0-9\s-]{8,}$/.test(formData.telefono.replace(/\s/g, ''))) {
+                    newErrors.telefono = 'El teléfono no es válido';
+                }
+                if (!formData.nombreEmpresa.trim()) {
+                    newErrors.nombreEmpresa = 'El nombre de empresa es requerido';
+                }
+                if (!formData.rubro) {
+                    newErrors.rubro = 'Debes seleccionar un rubro';
+                }
+                break;
+            case 2:
+                if (!formData.tipoProyecto) {
+                    newErrors.tipoProyecto = 'Debes seleccionar un tipo de proyecto';
+                }
+                if (!formData.principalObjetivo) {
+                    newErrors.principalObjetivo = 'Debes seleccionar un objetivo principal';
+                }
+                if (!formData.descripcionProyecto.trim()) {
+                    newErrors.descripcionProyecto = 'La descripción del proyecto es requerida';
+                } else if (formData.descripcionProyecto.trim().length < 10) {
+                    newErrors.descripcionProyecto = 'La descripción debe tener al menos 10 caracteres';
+                }
+                break;
+            case 3:
+                if (!formData.presupuestoEstimado) {
+                    newErrors.presupuestoEstimado = 'Debes seleccionar un rango de presupuesto';
+                }
+                if (!formData.nivelUrgencia) {
+                    newErrors.nivelUrgencia = 'Debes seleccionar un nivel de urgencia';
+                }
+                break;
+            case 4:
+                if (!formData.preferenciaContacto) {
+                    newErrors.preferenciaContacto = 'Debes seleccionar una preferencia de contacto';
+                }
+                if (!formData.horarioPreferido) {
+                    newErrors.horarioPreferido = 'Debes seleccionar un horario preferido';
+                }
+                break;
+            default:
+                break;
+        }
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const nextStep = () => {
-        if (currentStep < 4) {
-            setCurrentStep(currentStep + 1);
+        if (validateStep(currentStep)) {
+            if (currentStep < 4) {
+                setCurrentStep(currentStep + 1);
+            }
         }
     };
 
@@ -46,12 +119,31 @@ const FormularioContacto = () => {
     };
 
     const handleSubmit = async () => {
-        setIsSubmitting(true);
-        // Simular envío
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setIsSubmitted(true);
-        }, 2000);
+        if (validateStep(4)) {
+            setIsSubmitting(true);
+            try {
+                const response = await fetch('/api/contacto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Error al enviar el formulario');
+                }
+
+                setIsSubmitting(false);
+                setIsSubmitted(true);
+            } catch (error) {
+                console.error('Error:', error);
+                setIsSubmitting(false);
+                alert('Hubo un error al enviar el formulario. Por favor, intenta nuevamente.');
+            }
+        }
     };
 
     const renderStepContent = () => {
@@ -60,46 +152,66 @@ const FormularioContacto = () => {
                 return (
                     <div className="form-step-content">
                         <div className="form-field">
-                            <label>Nombre Completo</label>
+                            <div className="label-container">
+                                <label>Nombre Completo</label>
+                                {errors.nombreCompleto && <span className="error-message">{errors.nombreCompleto}</span>}
+                            </div>
                             <input
                                 type="text"
                                 value={formData.nombreCompleto}
                                 onChange={(e) => handleInputChange('nombreCompleto', e.target.value)}
                                 placeholder="Ingresa tu nombre completo"
+                                className={errors.nombreCompleto ? 'error' : ''}
                             />
                         </div>
                         <div className="form-field">
-                            <label>Correo</label>
+                            <div className="label-container">
+                                <label>Correo</label>
+                                {errors.correo && <span className="error-message">{errors.correo}</span>}
+                            </div>
                             <input
                                 type="email"
                                 value={formData.correo}
                                 onChange={(e) => handleInputChange('correo', e.target.value)}
                                 placeholder="tu@correo.com"
+                                className={errors.correo ? 'error' : ''}
                             />
                         </div>
                         <div className="form-field">
-                            <label>Teléfono</label>
+                            <div className="label-container">
+                                <label>Teléfono</label>
+                                {errors.telefono && <span className="error-message">{errors.telefono}</span>}
+                            </div>
                             <input
                                 type="tel"
                                 value={formData.telefono}
                                 onChange={(e) => handleInputChange('telefono', e.target.value)}
                                 placeholder="+56 9 1234 5678"
+                                className={errors.telefono ? 'error' : ''}
                             />
                         </div>
                         <div className="form-field">
-                            <label>Nombre De Empresa O Emprendimiento</label>
+                            <div className="label-container">
+                                <label>Nombre De Empresa O Emprendimiento</label>
+                                {errors.nombreEmpresa && <span className="error-message">{errors.nombreEmpresa}</span>}
+                            </div>
                             <input
                                 type="text"
                                 value={formData.nombreEmpresa}
                                 onChange={(e) => handleInputChange('nombreEmpresa', e.target.value)}
                                 placeholder="Nombre de tu empresa"
+                                className={errors.nombreEmpresa ? 'error' : ''}
                             />
                         </div>
                         <div className="form-field">
-                            <label>Rubro (Ej. Gastronomía, Educación, Tecnología, Etc.)</label>
+                            <div className="label-container">
+                                <label>Rubro (Ej. Gastronomía, Educación, Tecnología, Etc.)</label>
+                                {errors.rubro && <span className="error-message">{errors.rubro}</span>}
+                            </div>
                             <select
                                 value={formData.rubro}
                                 onChange={(e) => handleInputChange('rubro', e.target.value)}
+                                className={errors.rubro ? 'error' : ''}
                             >
                                 <option value="">Selecciona un rubro</option>
                                 <option value="gastronomia">Gastronomía</option>
@@ -117,10 +229,14 @@ const FormularioContacto = () => {
                 return (
                     <div className="form-step-content">
                         <div className="form-field">
-                            <label>¿Qué Tipo De Proyecto Quieres Impulsar?</label>
+                            <div className="label-container">
+                                <label>¿Qué Tipo De Proyecto Quieres Impulsar?</label>
+                                {errors.tipoProyecto && <span className="error-message">{errors.tipoProyecto}</span>}
+                            </div>
                             <select
                                 value={formData.tipoProyecto}
                                 onChange={(e) => handleInputChange('tipoProyecto', e.target.value)}
+                                className={errors.tipoProyecto ? 'error' : ''}
                             >
                                 <option value="">Selecciona un tipo</option>
                                 <option value="web">Aplicación Web</option>
@@ -132,10 +248,14 @@ const FormularioContacto = () => {
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>¿Cuál Es Tu Principal Objetivo?</label>
+                            <div className="label-container">
+                                <label>¿Cuál Es Tu Principal Objetivo?</label>
+                                {errors.principalObjetivo && <span className="error-message">{errors.principalObjetivo}</span>}
+                            </div>
                             <select
                                 value={formData.principalObjetivo}
                                 onChange={(e) => handleInputChange('principalObjetivo', e.target.value)}
+                                className={errors.principalObjetivo ? 'error' : ''}
                             >
                                 <option value="">Selecciona un objetivo</option>
                                 <option value="ventas">Aumentar Ventas</option>
@@ -147,13 +267,17 @@ const FormularioContacto = () => {
                             </select>
                         </div>
                         <div className="form-field form-field-textarea">
-                            <label>Describe Brevemente Tu Idea O Proyecto</label>
+                            <div className="label-container">
+                                <label>Describe Brevemente Tu Idea O Proyecto</label>
+                                {errors.descripcionProyecto && <span className="error-message">{errors.descripcionProyecto}</span>}
+                            </div>
                             <textarea
                                 value={formData.descripcionProyecto}
                                 onChange={(e) => handleInputChange('descripcionProyecto', e.target.value)}
                                 placeholder="Describe tu proyecto..."
                                 maxLength={500}
                                 rows={5}
+                                className={errors.descripcionProyecto ? 'error' : ''}
                             />
                             <span className="character-count">{formData.descripcionProyecto.length}/500</span>
                         </div>
@@ -163,10 +287,14 @@ const FormularioContacto = () => {
                 return (
                     <div className="form-step-content">
                         <div className="form-field">
-                            <label>¿Tienes Un Presupuesto Estimado?</label>
+                            <div className="label-container">
+                                <label>¿Tienes Un Presupuesto Estimado?</label>
+                                {errors.presupuestoEstimado && <span className="error-message">{errors.presupuestoEstimado}</span>}
+                            </div>
                             <select
                                 value={formData.presupuestoEstimado}
                                 onChange={(e) => handleInputChange('presupuestoEstimado', e.target.value)}
+                                className={errors.presupuestoEstimado ? 'error' : ''}
                             >
                                 <option value="">Selecciona un rango</option>
                                 <option value="menos-350">Menos de $350.000</option>
@@ -177,10 +305,14 @@ const FormularioContacto = () => {
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>Nivel De Urgencia:</label>
+                            <div className="label-container">
+                                <label>Nivel De Urgencia:</label>
+                                {errors.nivelUrgencia && <span className="error-message">{errors.nivelUrgencia}</span>}
+                            </div>
                             <select
                                 value={formData.nivelUrgencia}
                                 onChange={(e) => handleInputChange('nivelUrgencia', e.target.value)}
+                                className={errors.nivelUrgencia ? 'error' : ''}
                             >
                                 <option value="">Selecciona un nivel</option>
                                 <option value="baja">Baja (3+ meses)</option>
@@ -195,10 +327,14 @@ const FormularioContacto = () => {
                 return (
                     <div className="form-step-content">
                         <div className="form-field">
-                            <label>¿Cómo Prefieres Que Te Contactemos?</label>
+                            <div className="label-container">
+                                <label>¿Cómo Prefieres Que Te Contactemos?</label>
+                                {errors.preferenciaContacto && <span className="error-message">{errors.preferenciaContacto}</span>}
+                            </div>
                             <select
                                 value={formData.preferenciaContacto}
                                 onChange={(e) => handleInputChange('preferenciaContacto', e.target.value)}
+                                className={errors.preferenciaContacto ? 'error' : ''}
                             >
                                 <option value="">Selecciona una opción</option>
                                 <option value="email">Correo Electrónico</option>
@@ -208,10 +344,14 @@ const FormularioContacto = () => {
                             </select>
                         </div>
                         <div className="form-field">
-                            <label>Horario Preferido Para Contactarte</label>
+                            <div className="label-container">
+                                <label>Horario Preferido Para Contactarte</label>
+                                {errors.horarioPreferido && <span className="error-message">{errors.horarioPreferido}</span>}
+                            </div>
                             <select
                                 value={formData.horarioPreferido}
                                 onChange={(e) => handleInputChange('horarioPreferido', e.target.value)}
+                                className={errors.horarioPreferido ? 'error' : ''}
                             >
                                 <option value="">Selecciona un horario</option>
                                 <option value="manana">Mañana (9:00 - 12:00)</option>

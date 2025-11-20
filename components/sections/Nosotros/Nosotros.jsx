@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 const miembros = [
   {
     id: 1,
-    nombre: "Ana",
+    nombre: "Cesar",
     bio: "La mente creativa detrás de nuestros diseños. Fanática del café y los pixeles perfectos.",
     fotosAnimacion: [
       "/ruta/placeholder/ana-1.jpg",
@@ -22,7 +22,7 @@ const miembros = [
   },
   {
     id: 2,
-    nombre: "Bruno",
+    nombre: "Isidora",
     bio: "Nuestro gurú del código. Convierte los problemas en soluciones y el café en código.",
     fotosAnimacion: [
       "/ruta/placeholder/bruno-1.jpg",
@@ -32,7 +32,7 @@ const miembros = [
   },
   {
     id: 3,
-    nombre: "Carla",
+    nombre: "Marcelo",
     bio: "La estratega que nos mantiene enfocados. Nada se le escapa.",
     fotosAnimacion: [
       "/ruta/placeholder/carla-1.jpg",
@@ -42,7 +42,7 @@ const miembros = [
   },
   {
     id: 4,
-    nombre: "David",
+    nombre: "Cristian",
     bio: "El experto en datos. Si se puede medir, David puede mejorarlo.",
     fotosAnimacion: [
       "/ruta/placeholder/david-1.jpg",
@@ -52,7 +52,7 @@ const miembros = [
   },
   {
     id: 5,
-    nombre: "Elena",
+    nombre: "Maximiliano",
     bio: "La voz de nuestros usuarios. Se asegura de que todo lo que hacemos tenga sentido.",
     fotosAnimacion: [
       "/ruta/placeholder/elena-1.jpg",

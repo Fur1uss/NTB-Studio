@@ -126,10 +126,18 @@
     gap: 8px;
 }
 
+.label-container{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 .form-field label{
     font-size: 1rem;
     font-weight: 600;
     color: #000000;
+    margin: 0;
 }
 
 .form-field input,
@@ -152,6 +160,26 @@
 .form-field textarea:focus{
     outline: none;
     border-color: #20E337;
+}
+
+.form-field input.error,
+.form-field select.error,
+.form-field textarea.error{
+    border-color: #ff3333;
+}
+
+.form-field input.error:focus,
+.form-field select.error:focus,
+.form-field textarea.error:focus{
+    border-color: #ff3333;
+}
+
+.error-message{
+    color: #ff3333;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
 }
 
 .form-field select{

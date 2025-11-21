@@ -1,12 +1,7 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useLayoutEffect, useRef, useState, useEffect, lazy, Suspense } from 'react';
 import { League_Gothic } from 'next/font/google';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Environment } from '@react-three/drei';
-import * as THREE from 'three';
 import "./NTBeyonder.css";
 
 // Importar fuente League Gothic desde Google Fonts
@@ -16,33 +11,71 @@ const leagueGothic = League_Gothic({
     display: "swap",
 });
 
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
-
-// Preload del modelo GLB
-useGLTF.preload("/models/nasa.glb");
-
-// Componente del modelo 3D de NASA
-function NASAModel() {
-    const { scene } = useGLTF("/models/nasa.glb");
-    const modelRef = useRef();
+// Componente de la escena Three.js con lazy loading
+const LazyThreeScene = lazy(async () => {
+    const ReactModule = await import('react');
+    const [fiber, drei] = await Promise.all([
+        import('@react-three/fiber'),
+        import('@react-three/drei')
+    ]);
     
-    // Rotación suave continua
-    useFrame((state, delta) => {
-        if (modelRef.current) {
-            modelRef.current.rotation.y += delta * 0.3; // Rotación lenta
-        }
-    });
+    const { Canvas, useFrame } = fiber;
+    const { useGLTF, Environment } = drei;
+    const { useRef } = ReactModule;
     
-    return (
-        <primitive 
-            ref={modelRef}
-            object={scene} 
-            scale={3.0}
-            position={[2.5, .1, 0]}
-        />
-    );
-}
+    // Preload del modelo GLB
+    useGLTF.preload("/models/nasa.glb");
+    
+    // Componente del modelo 3D de NASA
+    function NASAModel() {
+        const { scene } = useGLTF("/models/nasa.glb");
+        const modelRef = useRef(null);
+        
+        // Rotación suave continua
+        useFrame((state, delta) => {
+            if (modelRef.current) {
+                modelRef.current.rotation.y += delta * 0.3;
+            }
+        });
+        
+        return (
+            <primitive 
+                ref={modelRef}
+                object={scene} 
+                scale={3.0}
+                position={[2.5, .1, 0]}
+            />
+        );
+    }
+    
+    // Componente completo de la escena
+    function ThreeSceneContent() {
+        return (
+            <>
+                <ambientLight intensity={0.6} />
+                <directionalLight position={[5, 5, 5]} intensity={1.2} />
+                <directionalLight position={[-5, -5, -5]} intensity={0.4} />
+                <NASAModel />
+                <Environment preset="sunset" />
+            </>
+        );
+    }
+    
+    // Retornar el componente Canvas completo
+    function ThreeScene() {
+        return (
+            <Canvas
+                camera={{ position: [0, 0, 300], fov: 45 }}
+                gl={{ alpha: true, antialias: true }}
+                className="NTBeyonder-nasa-canvas"
+            >
+                <ThreeSceneContent />
+            </Canvas>
+        );
+    }
+    
+    return { default: ThreeScene };
+});
 
 const NTBeyonder = () => {
     const sectionRef = useRef(null);
@@ -69,7 +102,22 @@ const NTBeyonder = () => {
     }, []);
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
+        // Dynamic import de GSAP para evitar render blocking
+        let gsapContext;
+        
+        const initAnimations = async () => {
+            const [gsapModule, scrollTriggerModule] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger')
+            ]);
+            
+            const gsap = gsapModule.gsap;
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
+            // Registrar plugin
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsapContext = gsap.context(() => {
             // Estado inicial: overlay negro visible, orbe visible y contenido invisible
             gsap.set(overlayRef.current, {
                 opacity: 1
@@ -184,9 +232,22 @@ const NTBeyonder = () => {
                 ease: "power3.out"
             }, "-=1");
 
-        }, sectionRef);
-
-        return () => ctx.revert();
+            }, sectionRef);
+            
+            return () => gsapContext.revert();
+        };
+        
+        // Defer animaciones hasta después del LCP
+        const timeoutId = setTimeout(() => {
+            initAnimations();
+        }, 200);
+        
+        return () => {
+            clearTimeout(timeoutId);
+            if (gsapContext) {
+                gsapContext.revert();
+            }
+        };
     }, []);
 
     return (
@@ -208,6 +269,9 @@ const NTBeyonder = () => {
                     src="/astronaut.webp" 
                     alt="Astronauta flotando representando innovación y exploración espacial del proyecto NTBeyonder" 
                     className="NTBeyonder-astronaut-image"
+                    width={600}
+                    height={800}
+                    loading="lazy"
                 />
             </div>
             <div ref={contentRef} className="NTBeyonder-content">
@@ -235,17 +299,9 @@ const NTBeyonder = () => {
                 </div>
 
                 <div className="NTBeyonder-content-image" ref={nasaModelRef}>
-                    <Canvas
-                        camera={{ position: [0, 0, 300], fov: 45 }}
-                        gl={{ alpha: true, antialias: true }}
-                        className="NTBeyonder-nasa-canvas"
-                    >
-                        <ambientLight intensity={0.6} />
-                        <directionalLight position={[5, 5, 5]} intensity={1.2} />
-                        <directionalLight position={[-5, -5, -5]} intensity={0.4} />
-                        <NASAModel />
-                        <Environment preset="sunset" />
-                    </Canvas>
+                    <Suspense fallback={<div style={{ width: '100%', height: '100%', background: '#000' }} />}>
+                        <LazyThreeScene />
+                    </Suspense>
                     <div className="NTBeyonder-nasa-logo">
                         <div ref={nasaBadgeRef} className="NTBeyonder-nasa-badge">
                             <p className="NTBeyonder-first-place">PRIMER LUGAR</p>

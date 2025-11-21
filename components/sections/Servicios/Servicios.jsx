@@ -25,6 +25,9 @@ const StarburstBadge = () => {
                 src="/peoplechoise.webp" 
                 alt="People Choice Badge - Premio de elección popular para NTB Studio" 
                 className="starburst-image"
+                width={140}
+                height={140}
+                loading="lazy"
             />
             <div className="starburst-text">
                 <span className="starburst-word">PEOPLE</span>
@@ -100,7 +103,7 @@ const Servicios = () => {
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: "top top",
-                    end: "+=150vh",
+                    end: "+=120vh",
                     scrub: 1,
                     pin: true,
                     pinSpacing: true,

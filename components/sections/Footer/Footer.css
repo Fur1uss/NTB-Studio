@@ -93,10 +93,23 @@
     color: #000000;
     font-size: 1rem;
     font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.footer-social-item:hover{
+    color: #ffffff;
+    transform: translateY(-2px);
 }
 
 .footer-social-item svg{
     flex-shrink: 0;
+    transition: fill 0.2s ease;
+}
+
+.footer-social-item:hover svg path{
+    fill: #ffffff;
 }
 
 .footer-links{

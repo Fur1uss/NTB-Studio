@@ -2,6 +2,8 @@ import { K2D } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/ui/SmoothScroll/SmoothScroll";
 import StructuredData from "@/components/ui/StructuredData/StructuredData";
+import NTBLoader from "@/components/ui/NTBLoader/NTBLoader";
+import { Analytics } from "@vercel/analytics/next"
 
 // Fuente K2D auto-hospedada con next/font (sin FOUT)
 const k2d = K2D({
@@ -105,10 +107,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body className={k2d.className} suppressHydrationWarning={true}>
+        <NTBLoader />
         <StructuredData />
         <SmoothScroll>
           {children}
         </SmoothScroll>
+        <Analytics />
       </body>
     </html>
   );

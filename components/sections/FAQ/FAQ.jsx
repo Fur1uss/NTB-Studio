@@ -1,30 +1,51 @@
 "use client";
 
 import { useState, useLayoutEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./FAQ.css";
-
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
 
 const FAQ = () => {
     const [openIndex, setOpenIndex] = useState(null);
     const sectionRef = useRef(null);
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            ScrollTrigger.create({
-                trigger: sectionRef.current,
-                start: "top top",
-                end: "+=150vh",
-                pin: true,
-                pinSpacing: true,
-                anticipatePin: 1
-            });
-        }, sectionRef);
-
-        return () => ctx.revert();
+        // Dynamic import de GSAP para evitar render blocking
+        let gsapContext;
+        
+        const initAnimations = async () => {
+            const [gsapModule, scrollTriggerModule] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger')
+            ]);
+            
+            const gsap = gsapModule.gsap;
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
+            // Registrar plugin
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsapContext = gsap.context(() => {
+                ScrollTrigger.create({
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "+=150vh",
+                    pin: true,
+                    pinSpacing: true,
+                    anticipatePin: 1
+                });
+            }, sectionRef);
+        };
+        
+        // Defer animaciones hasta después del LCP
+        const timeoutId = setTimeout(() => {
+            initAnimations();
+        }, 200);
+        
+        return () => {
+            clearTimeout(timeoutId);
+            if (gsapContext) {
+                gsapContext.revert();
+            }
+        };
     }, []);
 
     const faqs = [
@@ -57,10 +78,10 @@ const FAQ = () => {
     return (
         <section ref={sectionRef} className="faq-section">
             <div className="faq-decorative-star">
-                <img src="/star.webp" alt="Decorative star" />
+                <img src="/star.webp" alt="Decorative star" width={350} height={350} loading="lazy" />
             </div>
             <div className="faq-decorative-thunder">
-                <img src="/thunder.webp" alt="Decorative thunder" />
+                <img src="/thunder.webp" alt="Decorative thunder" width={600} height={600} loading="lazy" />
             </div>
             
             <h2 className="faq-title">Preguntas frecuentes</h2>

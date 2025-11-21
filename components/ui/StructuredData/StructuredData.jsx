@@ -15,8 +15,8 @@ export default function StructuredData() {
       "description": "Agencia de desarrollo web especializada en crear experiencias digitales únicas con React, diseño moderno y tecnologías de vanguardia.",
       "email": "contacto@ntb.cl",
       "sameAs": [
-        "https://www.instagram.com/ntb_cl",
-        "https://www.tiktok.com/@ntb_cl"
+        "https://www.instagram.com/ntb_cl/",
+        "https://www.tiktok.com/@ntb_cl?lang=es"
       ],
       "contactPoint": {
         "@type": "ContactPoint",

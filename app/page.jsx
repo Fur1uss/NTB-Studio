@@ -1,15 +1,21 @@
 "use client";
 
+import { lazy, Suspense } from 'react';
 import Hero from "@/components/sections/Hero/Hero";
 import Escogenos from "@/components/sections/Escogenos/Escogenos";
-import Nosotros from "@/components/sections/Nosotros/Nosotros";
-import NTBsticker from "@/components/proyectos/NTBStickerSupafinding/NTBSticker";
-import NTBeyonder from "@/components/proyectos/NTBeyonder/NTBeyonder";
-import Servicios from "@/components/sections/Servicios/Servicios";
-import FAQ from "@/components/sections/FAQ/FAQ";
-import Contacto from "@/components/sections/Contacto/Contacto";
-import Footer from "@/components/sections/Footer/Footer";
 import BubbleMenu from "@/components/ui/bubbleNav/BubbleNav";
+
+// Lazy load de componentes pesados (con Three.js, muchas animaciones, etc.)
+const Nosotros = lazy(() => import("@/components/sections/Nosotros/Nosotros"));
+const NTBsticker = lazy(() => import("@/components/proyectos/NTBStickerSupafinding/NTBSticker"));
+const NTBeyonder = lazy(() => import("@/components/proyectos/NTBeyonder/NTBeyonder"));
+const Servicios = lazy(() => import("@/components/sections/Servicios/Servicios"));
+const FAQ = lazy(() => import("@/components/sections/FAQ/FAQ"));
+const Contacto = lazy(() => import("@/components/sections/Contacto/Contacto"));
+const Footer = lazy(() => import("@/components/sections/Footer/Footer"));
+
+// Componente de carga simple
+const LoadingPlaceholder = () => <div style={{ minHeight: '100vh' }} />;
 
 export default function Home() {
   const items = [
@@ -66,21 +72,23 @@ export default function Home() {
       <section id="valor">
         <Escogenos />
       </section>
-      <section id="nosotros">
-        <Nosotros />
-      </section>
-      <section id="proyectos">
-        <NTBsticker />
-        <NTBeyonder />
-      </section>
-      <section id="servicios">
-        <Servicios />
-      </section>
-      <FAQ />
-      <section id="contacto">
-        <Contacto />
-      </section>
-      <Footer />
+      <Suspense fallback={<LoadingPlaceholder />}>
+        <section id="nosotros">
+          <Nosotros />
+        </section>
+        <section id="proyectos">
+          <NTBsticker />
+          <NTBeyonder />
+        </section>
+        <section id="servicios">
+          <Servicios />
+        </section>
+        <FAQ />
+        <section id="contacto">
+          <Contacto />
+        </section>
+        <Footer />
+      </Suspense>
     </main>
   );
 }

@@ -1,19 +1,30 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export default function SmoothScroll({ children }) {
   const lenisRef = useRef();
 
   useEffect(() => {
-    // Importación dinámica de Lenis
+    // Importación dinámica de todas las librerías pesadas
     let lenis;
+    let gsap;
+    let ScrollTrigger;
     
     const initLenis = async () => {
-      const LenisModule = await import('lenis');
+      // Dynamic imports para evitar render blocking
+      const [LenisModule, gsapModule, scrollTriggerModule] = await Promise.all([
+        import('lenis'),
+        import('gsap'),
+        import('gsap/ScrollTrigger')
+      ]);
+      
       const Lenis = LenisModule.default || LenisModule;
+      gsap = gsapModule.gsap;
+      ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+      
+      // Registrar plugin después de importar
+      gsap.registerPlugin(ScrollTrigger);
       
       lenis = new Lenis({
         duration: 1.2,
@@ -41,16 +52,22 @@ export default function SmoothScroll({ children }) {
       gsap.ticker.lagSmoothing(0);
     };
 
-    initLenis();
+    // Defer inicialización hasta después del LCP
+    const timeoutId = setTimeout(() => {
+      initLenis();
+    }, 100);
 
     // Limpieza
     return () => {
+      clearTimeout(timeoutId);
       if (lenisRef.current) {
         lenisRef.current.destroy();
       }
-      gsap.ticker.remove((time) => {
-        lenisRef.current?.raf(time * 1000);
-      });
+      if (gsap) {
+        gsap.ticker.remove((time) => {
+          lenisRef.current?.raf(time * 1000);
+        });
+      }
     };
   }, []);
 

@@ -1,12 +1,7 @@
 "use client";
 
-import React, { useLayoutEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useLayoutEffect, useRef, lazy, Suspense } from 'react';
 import { League_Gothic } from 'next/font/google';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Environment } from '@react-three/drei';
-import * as THREE from 'three';
 import "./NTBSticker.css"
 
 // Importar fuente League Gothic desde Google Fonts
@@ -16,33 +11,71 @@ const leagueGothic = League_Gothic({
     display: "swap",
 });
 
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
-
-// Preload del modelo GLB
-useGLTF.preload("/models/supabase_coin.glb");
-
-// Componente del modelo 3D de la moneda
-function CoinModel() {
-    const { scene } = useGLTF("/models/supabase_coin.glb");
-    const modelRef = useRef();
+// Componente de la escena Three.js con lazy loading para la moneda
+const LazyCoinScene = lazy(async () => {
+    const ReactModule = await import('react');
+    const [fiber, drei] = await Promise.all([
+        import('@react-three/fiber'),
+        import('@react-three/drei')
+    ]);
     
-    // Rotación suave continua
-    useFrame((state, delta) => {
-        if (modelRef.current) {
-            modelRef.current.rotation.y += delta * 0.3; // Rotación lenta
-        }
-    });
+    const { Canvas, useFrame } = fiber;
+    const { useGLTF, Environment } = drei;
+    const { useRef } = ReactModule;
     
-    return (
-        <primitive 
-            ref={modelRef}
-            object={scene} 
-            scale={3.0}
-            position={[2.5, .1, 0]}
-        />
-    );
-}
+    // Preload del modelo GLB
+    useGLTF.preload("/models/supabase_coin.glb");
+    
+    // Componente del modelo 3D de la moneda
+    function CoinModel() {
+        const { scene } = useGLTF("/models/supabase_coin.glb");
+        const modelRef = useRef(null);
+        
+        // Rotación suave continua
+        useFrame((state, delta) => {
+            if (modelRef.current) {
+                modelRef.current.rotation.y += delta * 0.3;
+            }
+        });
+        
+        return (
+            <primitive 
+                ref={modelRef}
+                object={scene} 
+                scale={3.0}
+                position={[2.5, .1, 0]}
+            />
+        );
+    }
+    
+    // Componente completo de la escena
+    function CoinSceneContent() {
+        return (
+            <>
+                <ambientLight intensity={0.6} />
+                <directionalLight position={[5, 5, 5]} intensity={1.2} />
+                <directionalLight position={[-5, -5, -5]} intensity={0.4} />
+                <CoinModel />
+                <Environment preset="sunset" />
+            </>
+        );
+    }
+    
+    // Retornar el componente Canvas completo
+    function CoinScene() {
+        return (
+            <Canvas
+                camera={{ position: [0, 0, 9], fov: 45 }}
+                gl={{ alpha: true, antialias: true }}
+                className="coin-canvas"
+            >
+                <CoinSceneContent />
+            </Canvas>
+        );
+    }
+    
+    return { default: CoinScene };
+});
 
 const NTBsticker = () => {
     const sectionRef = useRef(null);
@@ -53,7 +86,22 @@ const NTBsticker = () => {
     const coinContainerRef = useRef(null);
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
+        // Dynamic import de GSAP para evitar render blocking
+        let gsapContext;
+        
+        const initAnimations = async () => {
+            const [gsapModule, scrollTriggerModule] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger')
+            ]);
+            
+            const gsap = gsapModule.gsap;
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
+            // Registrar plugin
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsapContext = gsap.context(() => {
             // Estado inicial: overlay blanco visible, orbe invisible y contenido invisible
             gsap.set(overlayRef.current, {
                 opacity: 1
@@ -161,9 +209,20 @@ const NTBsticker = () => {
                 ease: "power3.out"
             }, "-=1");
 
-        }, sectionRef);
-
-        return () => ctx.revert();
+            }, sectionRef);
+        };
+        
+        // Defer animaciones hasta después del LCP
+        const timeoutId = setTimeout(() => {
+            initAnimations();
+        }, 200);
+        
+        return () => {
+            clearTimeout(timeoutId);
+            if (gsapContext) {
+                gsapContext.revert();
+            }
+        };
     }, []);
 
     return(
@@ -211,17 +270,9 @@ const NTBsticker = () => {
                             </textPath>
                         </text>
                     </svg>
-                    <Canvas
-                        camera={{ position: [0, 0, 9], fov: 45 }}
-                        gl={{ alpha: true, antialias: true }}
-                        className="coin-canvas"
-                    >
-                        <ambientLight intensity={0.6} />
-                        <directionalLight position={[5, 5, 5]} intensity={1.2} />
-                        <directionalLight position={[-5, -5, -5]} intensity={0.4} />
-                        <CoinModel />
-                        <Environment preset="sunset" />
-                    </Canvas>
+                    <Suspense fallback={<div style={{ width: '100%', height: '100%', background: '#000' }} />}>
+                        <LazyCoinScene />
+                    </Suspense>
                 </div>
             </div>
         </section>

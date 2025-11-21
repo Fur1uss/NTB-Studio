@@ -2,13 +2,8 @@
 
 import { useLayoutEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '@/components/ui/button/Button';
 import "./Servicios.css";
-
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
 
 // Icono de estrella verde
 const StarIcon = () => (
@@ -85,7 +80,31 @@ const Servicios = () => {
     ];
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
+        let gsapContext;
+        
+        const initAnimations = async () => {
+            const [gsapModule, scrollTriggerModule] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger')
+            ]);
+            
+            const gsap = gsapModule.gsap;
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Esperar a que SmoothScroll esté listo
+            await new Promise(resolve => {
+                if (document.readyState === 'complete') {
+                    requestAnimationFrame(() => requestAnimationFrame(resolve));
+                } else {
+                    window.addEventListener('load', () => {
+                        requestAnimationFrame(() => requestAnimationFrame(resolve));
+                    }, { once: true });
+                }
+            });
+            
+            gsapContext = gsap.context(() => {
             // Estado inicial: fondo negro y texto blanco
             gsap.set(sectionRef.current, {
                 backgroundColor: "#000000"
@@ -128,9 +147,16 @@ const Servicios = () => {
                 stagger: 0.2,
                 ease: "power2.inOut"
             }, 0);
-        }, sectionRef);
-
-        return () => ctx.revert();
+            }, sectionRef);
+        };
+        
+        initAnimations();
+        
+        return () => {
+            if (gsapContext) {
+                gsapContext.revert();
+            }
+        };
     }, []);
 
     return (

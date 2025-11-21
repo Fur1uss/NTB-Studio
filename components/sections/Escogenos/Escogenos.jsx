@@ -1,30 +1,56 @@
 "use client";
 
 import { useState, useLayoutEffect, useRef } from "react";
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./Escogenos.css";
-
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
 
 const Escogenos = () => {
     const [activeBadge, setActiveBadge] = useState(null);
     const sectionRef = useRef(null);
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            ScrollTrigger.create({
-                trigger: sectionRef.current,
-                start: "top top",
-                end: "+=150vh",
-                pin: true,
-                pinSpacing: true,
-                anticipatePin: 1
+        let gsapContext;
+        
+        const initAnimations = async () => {
+            const [gsapModule, scrollTriggerModule] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger')
+            ]);
+            
+            const gsap = gsapModule.gsap;
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Esperar a que SmoothScroll esté listo
+            await new Promise(resolve => {
+                if (document.readyState === 'complete') {
+                    requestAnimationFrame(() => requestAnimationFrame(resolve));
+                } else {
+                    window.addEventListener('load', () => {
+                        requestAnimationFrame(() => requestAnimationFrame(resolve));
+                    }, { once: true });
+                }
             });
-        }, sectionRef);
-
-        return () => ctx.revert();
+            
+            gsapContext = gsap.context(() => {
+                ScrollTrigger.create({
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "+=150vh",
+                    pin: true,
+                    pinSpacing: true,
+                    anticipatePin: 1
+                });
+            }, sectionRef);
+        };
+        
+        initAnimations();
+        
+        return () => {
+            if (gsapContext) {
+                gsapContext.revert();
+            }
+        };
     }, []);
 
     const handleBadgeClick = (index) => {

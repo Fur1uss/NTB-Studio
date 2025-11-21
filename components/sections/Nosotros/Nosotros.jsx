@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./Nosotros.css";
-
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
 
 // --- Datos ---
 const miembros = [
@@ -65,10 +60,34 @@ const Nosotros = () => {
   };
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
+    let gsapContext;
+    
+    const initAnimations = async () => {
+      const [gsapModule, scrollTriggerModule] = await Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger')
+      ]);
       
-      // --- Lógica Responsive con matchMedia ---
-      ScrollTrigger.matchMedia({
+      const gsap = gsapModule.gsap;
+      const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+      
+      gsap.registerPlugin(ScrollTrigger);
+      
+      // Esperar a que SmoothScroll esté listo
+      await new Promise(resolve => {
+        if (document.readyState === 'complete') {
+          requestAnimationFrame(() => requestAnimationFrame(resolve));
+        } else {
+          window.addEventListener('load', () => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+          }, { once: true });
+        }
+      });
+      
+      gsapContext = gsap.context(() => {
+        
+        // --- Lógica Responsive con matchMedia ---
+        ScrollTrigger.matchMedia({
         
         // --- Escritorio (Desktop) ---
         "(min-width: 769px)": () => {
@@ -252,10 +271,17 @@ const Nosotros = () => {
         
       }); // Fin de matchMedia
 
-    }, sectionRef); // Scope del contexto
+      }, sectionRef); // Scope del contexto
+    };
+    
+    initAnimations();
     
     // Limpieza
-    return () => ctx.revert();
+    return () => {
+      if (gsapContext) {
+        gsapContext.revert();
+      }
+    };
   }, []);
 
   return (

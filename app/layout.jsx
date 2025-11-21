@@ -106,6 +106,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
+      <head>
+        {/* Preload de recursos críticos para mejorar LCP */}
+        <link rel="preload" href="/NTBLogo.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/ntbwhite.webp" as="image" type="image/webp" />
+      </head>
       <body className={k2d.className} suppressHydrationWarning={true}>
         <NTBLoader />
         <StructuredData />

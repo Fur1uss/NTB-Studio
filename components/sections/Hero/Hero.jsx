@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import "./Hero.css"
 
 //Componentes
@@ -11,32 +9,68 @@ import Button from "@/components/ui/button/Button"
 import InfiniteScrollPhrases from "@/components/ui/textCarousel/TextCarousel"
 import BackgroundV4 from "@/components/ui/background-v4/BackgroundV4"
 
-// Registrar plugins
-gsap.registerPlugin(ScrollTrigger);
-
 const Hero = () => {
     const headerRef = useRef(null);
 
     useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            ScrollTrigger.create({
-                trigger: headerRef.current,
-                start: "top top",
-                end: "+=150vh",
-                pin: true,
-                pinSpacing: true,
-                anticipatePin: 1
+        // Dynamic import de GSAP para evitar render blocking
+        let gsapContext;
+        
+        const initAnimations = async () => {
+            const [gsapModule, scrollTriggerModule] = await Promise.all([
+                import('gsap'),
+                import('gsap/ScrollTrigger')
+            ]);
+            
+            const gsap = gsapModule.gsap;
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
+            // Registrar plugin
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Esperar a que el DOM esté listo y SmoothScroll haya inicializado
+            await new Promise(resolve => {
+                if (document.readyState === 'complete') {
+                    // Esperar un frame más para asegurar que SmoothScroll esté listo
+                    requestAnimationFrame(() => requestAnimationFrame(resolve));
+                } else {
+                    window.addEventListener('load', () => {
+                        requestAnimationFrame(() => requestAnimationFrame(resolve));
+                    }, { once: true });
+                }
             });
-        }, headerRef);
-
-        return () => ctx.revert();
+            
+            gsapContext = gsap.context(() => {
+                ScrollTrigger.create({
+                    trigger: headerRef.current,
+                    start: "top top",
+                    end: "+=150vh",
+                    pin: true,
+                    pinSpacing: true,
+                    anticipatePin: 1
+                });
+            }, headerRef);
+        };
+        
+        // Inicializar inmediatamente, pero esperar a que SmoothScroll esté listo
+        initAnimations();
+        
+        return () => {
+            if (gsapContext) {
+                gsapContext.revert();
+            }
+        };
     }, []);
 
-    const handleExploreClick = (e) => {
+    const handleExploreClick = async (e) => {
         e.preventDefault();
         const targetElement = document.getElementById('servicios');
         
         if (targetElement) {
+            // Dynamic import de ScrollTrigger para el scroll
+            const scrollTriggerModule = await import('gsap/ScrollTrigger');
+            const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+            
             // Buscar el ScrollTrigger asociado a esta sección o sus hijos
             const triggers = ScrollTrigger.getAll();
             let targetTrigger = null;

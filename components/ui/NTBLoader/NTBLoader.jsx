@@ -8,54 +8,20 @@ const NTBLoader = () => {
   const [minDisplayTime, setMinDisplayTime] = useState(true);
 
   useEffect(() => {
-    // Prevenir scroll mientras carga
-    document.body.style.overflow = 'hidden';
-    
     const startTime = Date.now();
-    const MIN_DISPLAY_TIME = 2000; // Mínimo 2 segundos para ver la animación
-    const MAX_LOADING_TIME = 4000; // Máximo 4 segundos antes de forzar la carga
+    // Reducido para no bloquear LCP - solo tiempo mínimo para animación
+    const MIN_DISPLAY_TIME = 800; // Reducido de 2000ms a 800ms
+    const MAX_LOADING_TIME = 2500; // Reducido de 4000ms a 2500ms
 
-    // Lista de recursos críticos a verificar
-    const criticalResources = [
-      '/ntbwhite.webp', // Logo principal
-    ];
+    // No bloquear overflow inmediatamente - solo después de un delay corto
+    // Esto permite que el contenido crítico se renderice
+    const overflowTimeout = setTimeout(() => {
+      document.body.style.overflow = 'hidden';
+    }, 100);
 
-    // Función para verificar si una imagen está cargada
-    const checkImageLoaded = (src) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(true); // Continuar aunque falle
-        img.src = src;
-        
-        // Timeout de seguridad
-        setTimeout(() => resolve(true), 2000);
-      });
-    };
-
-    // Función para verificar cuando el DOM está listo
-    const checkDOMReady = () => {
-      return new Promise((resolve) => {
-        if (document.readyState === 'complete') {
-          resolve(true);
-        } else {
-          window.addEventListener('load', () => resolve(true), { once: true });
-          // Timeout de seguridad
-          setTimeout(() => resolve(true), 1000);
-        }
-      });
-    };
-
-    // Función principal de carga
+    // Función principal de carga - optimizada para no bloquear LCP
     const handleLoading = async () => {
-      // Esperar a que el DOM esté listo
-      await checkDOMReady();
-
-      // Verificar imágenes críticas en paralelo
-      const imagePromises = criticalResources.map(src => checkImageLoaded(src));
-      await Promise.all(imagePromises);
-
-      // Esperar un tiempo mínimo para mostrar la animación
+      // Esperar tiempo mínimo reducido para la animación
       const elapsedTime = Date.now() - startTime;
       const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
       
@@ -64,21 +30,23 @@ const NTBLoader = () => {
       // Marcar que se cumplió el tiempo mínimo
       setMinDisplayTime(false);
 
-      // Esperar un poco más para la transición suave
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Transición más rápida
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       // Ocultar el loader
       setIsLoading(false);
       
       // Restaurar scroll
       document.body.style.overflow = '';
+      clearTimeout(overflowTimeout);
     };
 
-    // Timeout máximo de seguridad
+    // Timeout máximo de seguridad - más agresivo
     const maxTimeout = setTimeout(() => {
       setMinDisplayTime(false);
       setIsLoading(false);
       document.body.style.overflow = '';
+      clearTimeout(overflowTimeout);
     }, MAX_LOADING_TIME);
 
     handleLoading();
@@ -86,6 +54,7 @@ const NTBLoader = () => {
     // Cleanup
     return () => {
       clearTimeout(maxTimeout);
+      clearTimeout(overflowTimeout);
       document.body.style.overflow = '';
     };
   }, []);

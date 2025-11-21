@@ -5,6 +5,14 @@ const nextConfig = {
   // Optimizaciones para producción
   compress: true,
   
+  // Optimizaciones de compilación
+  swcMinify: true,
+  
+  // Optimizaciones de bundle
+  experimental: {
+    optimizePackageImports: ['gsap', '@react-three/fiber', '@react-three/drei'],
+  },
+  
   // Configuración de imágenes
   images: {
     formats: ['image/webp', 'image/avif'],

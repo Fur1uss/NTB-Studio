@@ -26,7 +26,7 @@ const StarburstBadge = () => {
             />
             <div className="starburst-text">
                 <span className="starburst-word">PEOPLE</span>
-                <span className="starburst-word">CHOISE</span>
+                <span className="starburst-word">CHOICE</span>
             </div>
         </>
     );
@@ -46,9 +46,9 @@ const Servicios = () => {
             features: [
                 "Landing Page o SPA",
                 "Base de datos o API",
-                "Panel de administracion",
+                "Panel de administración",
                 "Hosting y despliegue",
-                "Soporte técnico por 30 dias"
+                "Soporte técnico por 30 días"
             ]
         },
         {
@@ -68,14 +68,14 @@ const Servicios = () => {
             price: "$950.000",
             description: "Pensado para emprendedores, startups y pymes que buscan transformar una idea en un producto digital.",
             features: [
-                "Asesoria tectinca a medida",
+                "Asesoría técnica a medida",
                 "Diseño y desarrollo de MVP",
                 "Arquitectura base escalable",
                 "Prototipo interactivo o versión beta funcional",
                 "Seguimiento técnico y ajustes post-lanzamiento",
                 "Revisión estratégica de viabilidad y crecimiento"
             ],
-            badge: "PEOPLE CHOISE"
+            badge: "PEOPLE CHOICE"
         }
     ];
 

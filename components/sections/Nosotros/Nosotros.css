@@ -41,57 +41,36 @@
 .nosotros-wrapper {
   display: flex;
   width: 100%;
-  max-width: 1200px;
-  height: 70vh; /* Altura aumentada para que las imágenes se vean más grandes */
-  gap: 2vw;
+  max-width: 1400px; /* Aumentado de 1200px a 1400px para más espacio */
+  height: 85vh; /* Altura aumentada para polaroids más grandes */
+  gap: 2.5vw; /* Aumentado el gap para mejor espaciado */
   padding-top: 60px; /* Espacio para los nombres arriba */
-  padding-bottom: 40px; /* Espacio para el difuminado inferior */
+  padding-bottom: 80px; /* Espacio aumentado para las rotaciones */
   
   /* REQUISITOS DE ESTILO: */
   justify-content: center; /* Centradas */
-  align-items: center;   /* Centradas verticalmente en lugar de pegadas al fondo */
+  align-items: center;   /* Centradas verticalmente */
   position: relative;
-  overflow: visible; /* Permitir que nombres y difuminado sean visibles */
+  overflow: visible; /* Permitir que las polaroids rotadas se vean completamente */
 }
 
 /* --- Barra de Miembro (Escritorio) --- */
 .miembro-barra {
   flex: 1;
-  max-width: 18%;
-  height: 80%; /* Altura uniforme para todas las barras */
+  max-width: 24%; /* Aumentado para polaroids más grandes */
+  height: 95%; /* Aumentado para polaroids más grandes */
   background-color: transparent; /* Fondo transparente para mostrar las imágenes */
-  border-radius: 0 0 12px 12px;
+  border-radius: 0;
   
   /* Estado inicial para GSAP (en desktop) - será sobrescrito por GSAP */
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center; /* Centrado verticalmente */
+  align-items: center; /* Centrado horizontalmente */
   position: relative;
-  align-self: flex-end; /* Asegurar que crezca desde abajo */
-  /* No usar overflow: hidden para que el difuminado sea visible */
   
   /* Transición solo para hover, no interfiere con GSAP */
   transition: transform 0.3s ease;
-}
-
-/* Efecto difuminado blanco en el borde inferior - como si saliera de la pantalla */
-.miembro-barra::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px; /* Altura del área difuminada reducida */
-  background: linear-gradient(to bottom, 
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  filter: blur(8px);
-  pointer-events: none;
-  z-index: 2;
-  border-radius: 0 0 12px 12px;
-  transform: translateY(30%); /* Extender menos hacia abajo */
 }
 
 .miembro-barra:hover {
@@ -123,35 +102,21 @@
 .miembro-foto-flipbook {
   width: 100%;
   height: 100%;
-  background-size: cover;
+  max-width: 380px; /* Aumentado de 280px a 380px para polaroids más grandes */
+  max-height: 480px; /* Aumentado de 350px a 480px para polaroids más grandes */
+  background-size: contain; /* Cambiado de cover a contain para ver la polaroid completa */
   background-position: center center;
   background-repeat: no-repeat;
-  border-radius: 0 0 12px 12px;
+  border-radius: 8px; /* Bordes más suaves para polaroid */
   position: relative;
   z-index: 0;
-  overflow: hidden;
+  overflow: visible; /* Cambiado a visible para que las rotaciones no se corten */
+  /* Estilo de polaroid: solo borde blanco, sin sombra */
+  box-shadow: 0 0 0 8px #ffffff; /* Solo borde blanco de polaroid */
+  transform-origin: center center; /* Para que las rotaciones sean desde el centro */
 }
 
-/* Efecto de niebla en el fondo de la imagen */
-.miembro-foto-flipbook::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(to top, 
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.85) 20%,
-    rgba(255, 255, 255, 0.6) 40%,
-    rgba(255, 255, 255, 0.3) 60%,
-    rgba(255, 255, 255, 0.1) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 0 0 12px 12px;
-}
+/* Eliminado el efecto de niebla para las polaroids */
 
 /* --- Responsive (Tablet) --- */
 @media (min-width: 481px) and (max-width: 768px) {
@@ -179,9 +144,16 @@
 
   .miembro-barra {
     flex: 1;
-    max-width: 18%; /* Mantener proporciones */
-    /* Las alturas se mantienen con porcentajes (60%, 75%, etc.) */
+    max-width: 22%; /* Aumentado para polaroids más grandes */
+    height: 90%; /* Aumentado para polaroids más grandes */
+    justify-content: center;
+    align-items: center;
     box-shadow: none;
+  }
+  
+  .miembro-foto-flipbook {
+    max-width: 200px;
+    max-height: 250px;
   }
 
   .miembro-nombre {
@@ -197,11 +169,6 @@
     height: 100%;
   }
 
-  /* Difuminado también en tablet */
-  .miembro-barra::after {
-    height: 25px;
-    filter: blur(6px);
-  }
 }
 
 /* --- Responsive (Móvil) --- */
@@ -230,11 +197,13 @@
 
   .miembro-barra {
     flex: 1;
-    max-width: 18%; /* Mantener proporciones */
-    /* Las alturas se mantienen con porcentajes (60%, 75%, etc.) */
+    max-width: 22%; /* Aumentado para polaroids más grandes */
+    height: 90%; /* Aumentado para polaroids más grandes */
+    justify-content: center;
+    align-items: center;
     box-shadow: none;
   }
-
+  
   .miembro-nombre {
     position: absolute;
     top: -35px;
@@ -245,14 +214,10 @@
   }
 
   .miembro-foto-flipbook {
-    height: 100%;
+    max-width: 150px;
+    max-height: 200px;
   }
 
-  /* Difuminado también en móvil */
-  .miembro-barra::after {
-    height: 20px;
-    filter: blur(5px);
-  }
 }
 
 /* --- Estilos del Modal (Universal) --- */

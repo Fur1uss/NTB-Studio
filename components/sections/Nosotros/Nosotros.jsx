@@ -10,40 +10,36 @@ const miembros = [
     nombre: "César",
     bio: "La mente creativa detrás de nuestros diseños. Fanática del café y los pixeles perfectos.",
     fotosAnimacion: [
-      "/cesar.webp"
-    ]
+      "/cesarpolaroid.webp"
+    ],
+    rotation: -8 // Rotación en grados
   },
   {
     id: 2,
     nombre: "Isidora",
     bio: "Nuestro gurú del código. Convierte los problemas en soluciones y el café en código.",
     fotosAnimacion: [
-      "/isi.webp"
-    ]
+      "/isipolaroid.webp"
+    ],
+    rotation: 5
   },
   {
     id: 3,
     nombre: "Marcelo",
     bio: "La estratega que nos mantiene enfocados. Nada se le escapa.",
     fotosAnimacion: [
-      "/marce.webp"
-    ]
+      "/marcepolaroid.webp"
+    ],
+    rotation: -5
   },
   {
     id: 4,
-    nombre: "Cristian",
-    bio: "El experto en datos. Si se puede medir, David puede mejorarlo.",
-    fotosAnimacion: [
-      "/zoro.webp"
-    ]
-  },
-  {
-    id: 5,
     nombre: "Maximiliano",
     bio: "La voz de nuestros usuarios. Se asegura de que todo lo que hacemos tenga sentido.",
     fotosAnimacion: [
-      "/maxi.webp"
-    ]
+      "/maxipolaroid.webp"
+    ],
+    rotation: 7
   }
 ];
 
@@ -91,27 +87,13 @@ const Nosotros = () => {
         
         // --- Escritorio (Desktop) ---
         "(min-width: 769px)": () => {
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              pin: true,
-              pinSpacing: true,
-              anticipatePin: 1,
-              scrub: 1,
-              start: "top top",
-              // SOLUCIÓN AL BUG: Cálculo de 'end' dinámico.
-              // Proporciona 900px de "espacio de scroll" por cada miembro.
-              // Esto asegura que el 'end' sea proporcional al contenido.
-              end: () => "+=" + (memberRefs.current.length * 900), 
-            }
-          });
-
-          // Estado inicial de las barras y nombres
-          memberRefs.current.forEach((memberEl) => {
+          // PRIMERO: Establecer el estado inicial ANTES de crear el ScrollTrigger
+          // Esto evita saltos cuando la página se recarga
+          memberRefs.current.forEach((memberEl, index) => {
             const nombreEl = memberEl.querySelector(".miembro-nombre");
             const photoDiv = memberEl.querySelector(".miembro-foto-flipbook");
             
-            // Estado inicial: barra visible pero imagen fuera de vista (abajo)
+            // Estado inicial: barra visible pero imagen invisible
             gsap.set(memberEl, { 
               opacity: 1,
               clearProps: "transition"
@@ -121,49 +103,102 @@ const Nosotros = () => {
             gsap.set(nombreEl, {
               opacity: 0,
               y: -30,
-              scale: 0.8
+              scale: 0.8,
+              immediateRender: false
             });
             
-            // Estado inicial de la foto: fuera de vista abajo, manteniendo su tamaño
+            // Estado inicial de la foto polaroid: invisible, sin deslizamiento
+            const data = miembros[index];
+            const rotation = data.rotation || 0;
             gsap.set(photoDiv, {
               opacity: 0,
-              y: "100%", // Comienza completamente abajo, fuera de vista
-              scale: 1
+              scale: 0.8, // Comienza más pequeña para efecto de aparición
+              y: 0, // Sin movimiento vertical
+              rotation: rotation, // Rotación inicial
+              immediateRender: false
             });
           });
 
-          // Animación secuencial
-          memberRefs.current.forEach((memberEl, index) => {
-            const data = miembros[index];
-            const photoDiv = memberEl.querySelector(".miembro-foto-flipbook");
-            const nombreEl = memberEl.querySelector(".miembro-nombre");
-
-            // 1. Aparición del nombre arriba (primero, con bounce)
-            tl.to(nombreEl, {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              ease: "back.out(1.7)",
-              duration: 0.8
-            }, index * 0.4); // Espaciado entre nombres
-
-            // 2. La imagen aparece desde abajo, como si se asomara, sin cambiar tamaño
-            tl.to(photoDiv, {
-              opacity: 1,
-              y: 0, // Se desliza desde abajo (100%) hasta su posición final (0)
-              ease: "power2.out",
-              duration: 1.2,
-              force3D: true,
-              clearProps: "transition"
-            }, "<+=0.1"); // Empieza poco después del nombre
-
-            // 4. Animación "Cómica" (Flipbook) - más dinámica
-            const flipbookTl = gsap.timeline({ repeat: 2, repeatDelay: 0.1 });
-            data.fotosAnimacion.forEach((foto, i) => {
-              flipbookTl.set(photoDiv, { backgroundImage: `url(${foto})` }, i * 0.15);
+          // Esperar un frame para que el layout se estabilice
+          requestAnimationFrame(() => {
+            let scrollTriggerInstance;
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                pin: true,
+                pinSpacing: true,
+                anticipatePin: 1,
+                scrub: 1,
+                start: "top top",
+                // SOLUCIÓN AL BUG: Cálculo de 'end' dinámico.
+                // Proporciona 900px de "espacio de scroll" por cada miembro.
+                // Esto asegura que el 'end' sea proporcional al contenido.
+                end: () => "+=" + (memberRefs.current.length * 900),
+                invalidateOnRefresh: true,
+                // Guardar referencia del ScrollTrigger
+                onInit: (self) => {
+                  scrollTriggerInstance = self;
+                },
+                // Manejar el refresh para evitar saltos
+                onRefresh: () => {
+                  // Cuando ScrollTrigger se refresca, asegurar que el estado inicial se mantenga
+                  if (scrollTriggerInstance && scrollTriggerInstance.progress === 0) {
+                    memberRefs.current.forEach((memberEl, index) => {
+                      const photoDiv = memberEl.querySelector(".miembro-foto-flipbook");
+                      const nombreEl = memberEl.querySelector(".miembro-nombre");
+                      const data = miembros[index];
+                      const rotation = data.rotation || 0;
+                      
+                      gsap.set(photoDiv, {
+                        opacity: 0,
+                        scale: 0.8,
+                        rotation: rotation
+                      });
+                      gsap.set(nombreEl, {
+                        opacity: 0,
+                        y: -30,
+                        scale: 0.8
+                      });
+                    });
+                  }
+                }
+              }
             });
 
-            tl.add(flipbookTl, "<+=0.3"); // Añadir después de que la foto aparezca
+            // Animación secuencial - polaroids aparecen una a una
+            memberRefs.current.forEach((memberEl, index) => {
+              const photoDiv = memberEl.querySelector(".miembro-foto-flipbook");
+              const nombreEl = memberEl.querySelector(".miembro-nombre");
+
+              // 1. Aparición del nombre arriba (primero, con bounce)
+              tl.to(nombreEl, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                ease: "back.out(1.7)",
+                duration: 0.8,
+                immediateRender: false
+              }, index * 0.5); // Espaciado entre nombres
+
+              // 2. La polaroid aparece con fade in y scale, sin deslizamiento
+              const data = miembros[index];
+              const rotation = data.rotation || 0;
+              tl.to(photoDiv, {
+                opacity: 1,
+                scale: 1, // Escala de 0.8 a 1 para efecto de aparición
+                rotation: rotation, // Mantener la rotación
+                ease: "back.out(1.4)", // Efecto suave de rebote
+                duration: 0.9,
+                force3D: true,
+                immediateRender: false,
+                clearProps: "transition"
+              }, "<+=0.2"); // Empieza poco después del nombre
+            });
+            
+            // Refrescar ScrollTrigger después de que todo esté configurado
+            requestAnimationFrame(() => {
+              ScrollTrigger.refresh();
+            });
           });
         },
 
@@ -185,10 +220,14 @@ const Nosotros = () => {
               y: -20
             });
             
-            // La imagen comienza fuera de vista abajo
+            // La polaroid comienza invisible, sin deslizamiento
+            const data = miembros[index];
+            const rotation = data.rotation || 0;
             gsap.set(photoDiv, {
               opacity: 0,
-              y: "100%"
+              scale: 0.8,
+              y: 0,
+              rotation: rotation
             });
             
             // Animación al scrollear
@@ -200,12 +239,13 @@ const Nosotros = () => {
               }
             });
             
-            // La imagen aparece desde abajo, como si se asomara
+            // La polaroid aparece con fade in y scale, sin deslizamiento
             tl.to(photoDiv, {
               opacity: 1,
-              y: 0,
+              scale: 1,
+              rotation: rotation,
               duration: 0.8,
-              ease: "power2.out",
+              ease: "back.out(1.4)",
               force3D: true,
               clearProps: "transition"
             })
@@ -236,10 +276,14 @@ const Nosotros = () => {
               y: -20
             });
             
-            // La imagen comienza fuera de vista abajo
+            // La polaroid comienza invisible, sin deslizamiento
+            const data = miembros[index];
+            const rotation = data.rotation || 0;
             gsap.set(photoDiv, {
               opacity: 0,
-              y: "100%"
+              scale: 0.8,
+              y: 0,
+              rotation: rotation
             });
             
             // Animación al scrollear
@@ -251,12 +295,13 @@ const Nosotros = () => {
               }
             });
             
-            // La imagen aparece desde abajo, como si se asomara
+            // La polaroid aparece con fade in y scale, sin deslizamiento
             tl.to(photoDiv, {
               opacity: 1,
-              y: 0,
+              scale: 1,
+              rotation: rotation,
               duration: 0.8,
-              ease: "power2.out",
+              ease: "back.out(1.4)",
               force3D: true,
               clearProps: "transition"
             })
@@ -302,7 +347,10 @@ const Nosotros = () => {
             <span className="miembro-nombre">{miembro.nombre}</span>
             <div 
               className="miembro-foto-flipbook"
-              style={{ backgroundImage: `url(${miembro.fotosAnimacion[0]})` }}
+              style={{ 
+                backgroundImage: `url(${miembro.fotosAnimacion[0]})`,
+                transform: `rotate(${miembro.rotation || 0}deg)`
+              }}
             ></div>
           </div>
         ))}

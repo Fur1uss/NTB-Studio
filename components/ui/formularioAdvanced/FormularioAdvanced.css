@@ -43,9 +43,9 @@
     flex-shrink: 0;
 }
 
-.progress-circle.active{
-    background-color: #ffffff;
-    border-color: #ffffff;
+.formulario-advanced-container .progress-circle.active{
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
 }
 
 .progress-line{
@@ -57,8 +57,8 @@
     flex-shrink: 0;
 }
 
-.progress-line.active{
-    background-color: #ffffff;
+.formulario-advanced-container .progress-line.active{
+    background-color: #ffffff !important;
 }
 
 .form-step-title{
@@ -227,11 +227,11 @@
     background-color: #f5f5f5;
 }
 
-.btn-next,
-.btn-submit{
-    background-color: #000000;
-    border: none;
-    color: #ffffff;
+.formulario-advanced-container .btn-next,
+.formulario-advanced-container .btn-submit{
+    background-color: #000000 !important;
+    border: none !important;
+    color: #ffffff !important;
     padding: 14px 32px;
     border-radius: 8px;
     font-size: 1rem;

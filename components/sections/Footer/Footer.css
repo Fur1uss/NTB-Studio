@@ -52,23 +52,31 @@
     overflow-x: hidden;
 }
 
-.footer-content{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    max-width: 1200px;
+.footer-main-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 120px;
+    max-width: 1400px;
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
 }
 
-.footer-bottom-content{
-    width: 100%;
-    padding: 40px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+.footer-logo-wrapper{
+    flex-shrink: 0;
 }
+
+.footer-content{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+    flex: 1;
+    box-sizing: border-box;
+    align-items: start;
+}
+
+/* .footer-bottom-content ya no se usa, el logo está en la misma fila */
 
 .footer-column{
     display: flex;
@@ -151,10 +159,7 @@
     flex-shrink: 0;
 }
 
-.footer-column-slogan{
-    max-width: 300px;
-    width: 100%;
-}
+/* .footer-column-slogan ya no es necesario como clase separada */
 
 .footer-slogan{
     color: #000000;
@@ -183,10 +188,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 15px;
-    flex-shrink: 0;
-    align-self: flex-end;
 }
 
 .footer-logo{
@@ -219,19 +222,25 @@
         padding: 50px 30px;
     }
     
+    .footer-main-wrapper{
+        flex-direction: column;
+        gap: 40px;
+    }
+    
+    .footer-logo-wrapper{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .footer-logo-section{
+        align-items: center;
+    }
+    
     .footer-content{
         grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        max-width: 900px;
-    }
-    
-    .footer-column-slogan{
-        max-width: 100%;
-        grid-column: 1 / -1;
-    }
-    
-    .footer-bottom-content{
-        padding: 30px;
+        gap: 40px;
+        width: 100%;
     }
     
     .footer-logo{
@@ -253,18 +262,27 @@
         padding: 40px 20px;
     }
     
+    .footer-main-wrapper{
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .footer-logo-wrapper{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .footer-logo-section{
+        align-items: center;
+        width: 100%;
+    }
+    
     .footer-content{
         grid-template-columns: 1fr;
         gap: 25px;
-        max-width: 100%;
         width: 100%;
         padding: 0;
-    }
-    
-    .footer-column-slogan{
-        grid-column: 1;
-        max-width: 100%;
-        width: 100%;
     }
     
     .footer-column{
@@ -296,16 +314,6 @@
     
     .footer-slogan{
         font-size: 0.95rem;
-    }
-    
-    .footer-bottom-content{
-        padding: 25px 20px;
-        justify-content: center;
-    }
-    
-    .footer-logo-section{
-        align-items: center;
-        width: 100%;
     }
     
     .footer-logo{
@@ -365,10 +373,6 @@
         margin-bottom: 15px;
     }
     
-    .footer-column-slogan{
-        max-width: 100%;
-    }
-    
     .footer-contact-button{
         padding: 10px 20px !important;
         font-size: 0.9rem !important;
@@ -379,8 +383,14 @@
         margin: 0 !important;
     }
     
-    .footer-bottom-content{
-        padding: 20px 15px;
+    .footer-logo-wrapper{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .footer-logo-section{
+        align-items: center;
     }
     
     .footer-logo{

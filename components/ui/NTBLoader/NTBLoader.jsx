@@ -9,28 +9,47 @@ const NTBLoader = () => {
 
   useEffect(() => {
     const startTime = Date.now();
-    // Reducido para no bloquear LCP - solo tiempo mínimo para animación
-    const MIN_DISPLAY_TIME = 800; // Reducido de 2000ms a 800ms
-    const MAX_LOADING_TIME = 2500; // Reducido de 4000ms a 2500ms
+    // Tiempo mínimo para animación
+    const MIN_DISPLAY_TIME = 800;
+    // Tiempo adicional después de que todo esté cargado (2.5 segundos = 2500ms)
+    const ADDITIONAL_LOAD_TIME = 2500;
+    // Timeout máximo de seguridad (muy generoso para dar tiempo a todo)
+    const MAX_LOADING_TIME = 15000; // 15 segundos máximo
 
-    // No bloquear overflow inmediatamente - solo después de un delay corto
-    // Esto permite que el contenido crítico se renderice
+    // Bloquear overflow inmediatamente
     const overflowTimeout = setTimeout(() => {
       document.body.style.overflow = 'hidden';
     }, 100);
 
-    // Función principal de carga - optimizada para no bloquear LCP
+    // Función principal de carga
     const handleLoading = async () => {
-      // Esperar tiempo mínimo reducido para la animación
+      // Esperar tiempo mínimo para la animación
       const elapsedTime = Date.now() - startTime;
       const remainingTime = Math.max(0, MIN_DISPLAY_TIME - elapsedTime);
       
       await new Promise(resolve => setTimeout(resolve, remainingTime));
 
+      // Esperar a que la página esté completamente cargada
+      const waitForPageLoad = () => {
+        return new Promise((resolve) => {
+          if (document.readyState === 'complete') {
+            resolve();
+          } else {
+            window.addEventListener('load', resolve, { once: true });
+          }
+        });
+      };
+
+      // Esperar a que todo esté cargado
+      await waitForPageLoad();
+
+      // Después de que todo esté cargado, esperar 5 segundos adicionales
+      await new Promise(resolve => setTimeout(resolve, ADDITIONAL_LOAD_TIME));
+
       // Marcar que se cumplió el tiempo mínimo
       setMinDisplayTime(false);
 
-      // Transición más rápida
+      // Transición suave
       await new Promise(resolve => setTimeout(resolve, 300));
 
       // Ocultar el loader
@@ -41,7 +60,7 @@ const NTBLoader = () => {
       clearTimeout(overflowTimeout);
     };
 
-    // Timeout máximo de seguridad - más agresivo
+    // Timeout máximo de seguridad
     const maxTimeout = setTimeout(() => {
       setMinDisplayTime(false);
       setIsLoading(false);

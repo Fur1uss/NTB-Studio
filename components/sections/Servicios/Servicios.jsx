@@ -41,7 +41,6 @@ const Servicios = () => {
     const servicios = [
         {
             title: "Essential",
-            price: "$250.000",
             description: "Ideal para empresas o profesionales que buscan presencia digital moderna y funcional.",
             features: [
                 "Landing Page o SPA",
@@ -53,7 +52,6 @@ const Servicios = () => {
         },
         {
             title: "Advanced",
-            price: "$550.000",
             description: "Diseñado para empresas que requieren soluciones complejas o sistemas personalizados.",
             features: [
                 "Aplicaciones web completas",
@@ -65,7 +63,6 @@ const Servicios = () => {
         },
         {
             title: "Innovated",
-            price: "$950.000",
             description: "Pensado para emprendedores, startups y pymes que buscan transformar una idea en un producto digital.",
             features: [
                 "Asesoría técnica a medida",
@@ -175,7 +172,6 @@ const Servicios = () => {
                             </div>
                         )}
                         <h3 className="servicio-card-title">{servicio.title}</h3>
-                        <p className="servicio-card-price">{servicio.price}</p>
                         <p className="servicio-card-description">{servicio.description}</p>
                         <ul className="servicio-card-features">
                             {servicio.features.map((feature, idx) => (
